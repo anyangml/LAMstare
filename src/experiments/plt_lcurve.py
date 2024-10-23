@@ -1,5 +1,6 @@
 from pathlib import Path
-from utils import fetch_lcurve, sendimg, get_head_weights
+from src.utils.plot import fetch_lcurve, sendimg
+from src.utils.dptest import get_head_weights
 import matplotlib.pyplot as plt
 import json
 

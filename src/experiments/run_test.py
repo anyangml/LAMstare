@@ -1,7 +1,6 @@
-from utils import extract_info_from_dptest_txt
+from src.utils.dptest import extract_info_from_dptest_txt, get_head_weights
 from database import Record
 import subprocess
-from utils import get_head_weights
 import os
 import numpy as np
 from pathlib import Path
