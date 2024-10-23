@@ -1,0 +1,6 @@
+FEISHU_APP_ID=
+FEISHU_APP_SECRET=
+FEISHU_BOT_URL=https://open.feishu.cn/open-apis/bot/v2/hook/*****
+MYSQL_USERNAME=
+MYSQL_PASSWORD=
+MYSQL_HOST=
