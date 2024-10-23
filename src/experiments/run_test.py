@@ -1,5 +1,5 @@
 from src.utils.dptest import extract_info_from_dptest_txt, get_head_weights
-from database import Record
+from src.infra import Record
 import subprocess
 import os
 import numpy as np
