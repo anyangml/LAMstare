@@ -80,7 +80,7 @@ def find_ckpt_to_test_cron(exp_path:str, freq:int):
 
     return need_to_test
 
-def main(exp_path:str, freq:int=510000):
+def main(exp_path:str, freq:int=200000):
     need_to_test = find_ckpt_to_test_cron(exp_path, freq)
     if need_to_test is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
