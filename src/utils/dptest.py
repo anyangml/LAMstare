@@ -1,11 +1,12 @@
 import json
+from pathlib import Path
 from typing import Dict
 
 
 
-# DP-test 
+# DP-test
 
-def extract_info_from_dptest_txt(dataset_name:str, filepath:str="dptest_res.txt") -> Dict[str,float]:
+def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[str,float]:
     """
     Parse dptest results to a dict
 
@@ -13,7 +14,7 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:str="dptest_res.txt"
     ----------
         dataset_name: str
             The name of the dataset being tested on.
-        
+
         filepath: str
             The path to the dptest output logfile.
 
@@ -43,17 +44,17 @@ def extract_valid_pth_from_input(input_file, output_pth):
                 f.write(f"{pth}\n")
 
 
-def get_head_weights(run_pth) -> Dict[str,float]:
+def get_head_weights(exp_path) -> Dict[str,float]:
     """
     Extract the model_prob dict from a multitask `input.json`.
 
     Parameters:
     -----------
-        run_pth : str
+        exp_path : str
             Absolute path to the experiment folder.
 
     """
-    with open(run_pth+"/input.json","r") as f:
+    with open(exp_path+"/input.json","r") as f:
         dd = json.load(f)
     weights = dd['training']['model_prob']
     return weights
