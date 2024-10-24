@@ -11,18 +11,13 @@ echo "Freezing Model -- $run_id -- $ckpt_name -- $head_name"
 frozen_model="${run_id}#${ckpt_name}#${head_name}.pth"
 
 cd $run_path
-if [ ! -f $frozen_model ]; then
-  dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}.pt --head ${head_name}
-  if [ $? -ne 0 ]; then
-    echo "Model Freezing Failed."
-    exit 1
-  else
-    echo "Model Freezing Finished."
-  fi
+dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}.pt --head ${head_name}
+if [ $? -ne 0 ]; then
+  echo "Model Freezing Failed."
+  exit 1
 else
-  echo "Model Already Freezed."
+  echo "Model Freezing Finished."
 fi
-
 
 mv ${frozen_model} ${outdir}
 cd $outdir
@@ -31,10 +26,6 @@ test_result=${run_id}#${ckpt_name}#${head_name}.txt
 if [ ! -f "${frozen_model}" ]; then
   echo "No Frozen Model ${frozen_model}."
   exit 1
-fi
-if [ ! -f ${test_result} ]; then
-  dp --pt test -m ${frozen_model} -f ${testfile} -l ${test_result}
 else
-  echo "Test Result Already Exists." # FIXME: need to determine if test finishes correctly
-fi
+  dp --pt test -m ${frozen_model} -f ${testfile} -l ${test_result}
 echo "dp test result saved to ${outdir}${test_result}"
