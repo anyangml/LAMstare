@@ -28,4 +28,10 @@ if [ ! -f "${frozen_model}" ]; then
   exit 1
 else
   dp --pt test -m ${frozen_model} -f ${testfile} -l ${test_result}
-echo "dp test result saved to ${outdir}${test_result}"
+fi
+if [ $? -ne 0 ]; then
+  echo "dp test Failed!"
+  exit 1
+else
+  echo "dp test result saved to ${outdir}${test_result}"
+fi
