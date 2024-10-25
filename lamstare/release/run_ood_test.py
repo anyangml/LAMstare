@@ -75,5 +75,4 @@ def main(exp_path: str, ckpt: Optional[int] = None, is_multitask: bool = True)->
 
 if __name__ == "__main__":
     # main("", is_multitask=False)
-    print(get_ood_to_head_map())
 
