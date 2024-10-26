@@ -2,7 +2,8 @@ IS_MULTI_TASK: true
 OOD_TO_HEAD_MAP:
   ANI: 
     head: Domains_Drug # no path
-    filepath: null
+    filepath: 
+     - /mnt/data_nas/public/public_training_data/wangh-v1.3/Domains/ANI/downstream/
   HEA25S: 
     head: Domains_Alloy
     filepath: 
