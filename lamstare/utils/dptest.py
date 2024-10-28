@@ -14,7 +14,6 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[st
     ----------
         dataset_name: str
             The name of the dataset being tested on.
-
         filepath: str
             The path to the dptest output logfile.
 

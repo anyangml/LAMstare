@@ -1,0 +1,98 @@
+IS_MULTI_TASK: true
+OOD_TO_HEAD_MAP:
+  ANI: 
+    head: Domains_Drug # no path
+    filepath: null
+  HEA25S: 
+    head: Domains_Alloy
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/HEA25_S/train
+      - /mnt/data_nas/public/public_training_data/HEA25_S/valid
+  HEMC_PBE: 
+    head: Domains_Alloy
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/HEM_C_B2/train
+      - /mnt/data_nas/public/public_training_data/HEM_C_B2/valid
+  MD22:
+    head: Domains_Drug
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/MD22/train
+      - /mnt/data_nas/public/public_training_data/MD22/valid
+  COLL_train:
+    head: Organic_Reactions
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/collision/train
+      - /mnt/data_nas/public/public_training_data/collision/valid
+      - /mnt/data_nas/public/public_training_data/collision/test
+  H_nature_2022:
+    head: Organic_Reactions
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/H_nature/train
+      - /mnt/data_nas/public/public_training_data/H_nature/valid
+  REANN_CO2_Ni100:
+    head: ODAC23
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/REANN_CO2_Ni100/train
+      - /mnt/data_nas/public/public_training_data/REANN_CO2_Ni100/valid
+  DNPs_RSCDD_2023-Kr: # update name
+    head: Domains_Alloy
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/23-single-Kr/train
+      - /mnt/data_nas/public/public_training_data/23-single-Kr/valid
+  Si-ZEO22:
+    head: Domains_Cluster
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/Si-ZEO22/train
+      - /mnt/data_nas/public/public_training_data/Si-ZEO22/valid
+  SuperHydride:
+    head: null #update head
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/SuperHydride/train
+      - /mnt/data_nas/public/public_training_data/SuperHydride/valid
+  NequIP_NC_2022:
+    head: Domains_SSE_PBE
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/Nequip_nc/train
+      - /mnt/data_nas/public/public_training_data/Nequip_nc/valid
+  Ca_batteries_CM2021:
+    head: MP_traj_v024_alldata_mixu
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/Ca-battery/train
+      - /mnt/data_nas/public/public_training_data/Ca-battery/valid
+  Perovskite_Marokite_oxides:
+    head: Domains_FerroEle
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/train
+      - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/valid
+  Chig-AIMD_random_train:
+    head: Domains_Drug
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/AIMD-Chig/train
+      - /mnt/data_nas/public/public_training_data/AIMD-Chig/valid
+  QM9x:
+    head: Domains_Drug
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/QM9x/train
+      - /mnt/data_nas/public/public_training_data/QM9x/valid
+  CGM-MLP_NC2023: # update name
+    head: OC20M
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/CGM_MLP/train
+      - /mnt/data_nas/public/public_training_data/CGM_MLP/valid
+  HPt_NC_2022:
+    head: OC20M
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/HPt_NC_2022/train
+      - /mnt/data_nas/public/public_training_data/HPt_NC_2022/valid
+  Cu_MgO_catalysts: # update name
+    head: OC20M
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/Cu-MgO-CO2/train
+      - /mnt/data_nas/public/public_training_data/Cu-MgO-CO2/valid
+  Liquid_water_interfaces_JC2021: # update name
+    head: MP_traj_v024_alldata_mixu
+    filepath: 
+      - /mnt/data_nas/public/public_training_data/CO_CO_coupling/train
+      - /mnt/data_nas/public/public_training_data/CO_CO_coupling/valid
+  
+
