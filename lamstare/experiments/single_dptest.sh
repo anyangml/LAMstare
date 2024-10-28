@@ -12,7 +12,7 @@ frozen_model="${run_id}#${ckpt_name}#${head_name}.pth"
 
 cd $run_path
 # omit --head for single task
-dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}.pt ${head_name:+"--head ${head_name}"}
+dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}.pt ${head_name:+--head ${head_name}}
 if [ $? -ne 0 ]; then
   echo "Model Freezing Failed."
   exit 1
