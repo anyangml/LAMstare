@@ -1,10 +1,10 @@
 from pathlib import Path
-from src.utils.dptest import (
+from lamstare.utils.dptest import (
     extract_info_from_dptest_txt,
     get_head_weights,
     extract_valid_path_from_input,
 )
-from src.infra import Record
+from lamstare.infra import Record
 import subprocess
 import os
 import numpy as np
