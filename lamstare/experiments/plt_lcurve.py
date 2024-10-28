@@ -36,7 +36,7 @@ def main(run_pth, roll:int=50):
         if head in BASELINE_MAP:
             baseline_hist = fetch_lcurve(BASELINE_MAP[head])
             STEP_NORMAL_PREF = sum(weights.values())/weights[head]*128/120 # need to adjust this value
-            
+
             ax[i][0].loglog([s * STEP_NORMAL_PREF for s in baseline_hist["step"]], baseline_hist[f"rmse_e_trn"].rolling(1000).mean(), linestyle='-',color="red")
             ax[i][0].loglog([s * STEP_NORMAL_PREF for s in baseline_hist["step"]], baseline_hist[f"rmse_e_val"].rolling(1000).mean(), linestyle='-.',color="red")
             ax[i][1].loglog([s * STEP_NORMAL_PREF for s in baseline_hist["step"]], baseline_hist[f"rmse_f_trn"].rolling(1000).mean(), linestyle='-',color="red")

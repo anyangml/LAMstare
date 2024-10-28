@@ -9,10 +9,10 @@ import json
 with open("/mnt/data_nas/public/multitask/eval_scripts/baseline_stat.json","r") as f:
     PREVIOUS_BASELINE = json.load(f)
 
-    
+
 def fetch_dptest_res(run_id:str):
     all_records = defaultdict(dict)
-    
+
     for rec in Record.query_by_run(run_id):
         all_records[rec.head][rec.step] = {
             "energy_mae":rec.energy_mae,
@@ -91,8 +91,8 @@ def main(run_id:str):
                     ax[i][2].axhline(PREVIOUS_BASELINE[head]["mae_v"],color="blue", linestyle="-.")
 
             weighted_dptest.append(np.array([
-                all_records[head]["ener_mae"], 
-                all_records[head]["ener_rmse"], 
+                all_records[head]["ener_mae"],
+                all_records[head]["ener_rmse"],
                 all_records[head]["force_mae"],
                 all_records[head]["force_rmse"],
                 all_records[head]["virial_mae"],
@@ -101,7 +101,7 @@ def main(run_id:str):
     n_ckpt_to_weight = weighted_dptest[-1].shape[1]
     weighted_dptest = [rr[:,:n_ckpt_to_weight] for rr in weighted_dptest]
     weighted_dptest = np.sum(weighted_dptest, axis=0)/sum(weights.values())
-    
+
     ax[-1][0].loglog(all_records[head]["step"][:n_ckpt_to_weight], weighted_dptest[0],"bo-",label="MAE")
     ax[-1][0].loglog(all_records[head]["step"][:n_ckpt_to_weight], weighted_dptest[1],"ro-",label="RMSE")
     ax[-1][0].set_ylabel(f"Energy_Weighted")
@@ -113,14 +113,13 @@ def main(run_id:str):
     ax[-1][2].loglog(all_records[head]["step"][:n_ckpt_to_weight], weighted_dptest[4],"bo-",label="MAE")
     ax[-1][2].loglog(all_records[head]["step"][:n_ckpt_to_weight], weighted_dptest[5],"ro-",label="RMSE")
     ax[-1][2].set_ylabel(f"Virial_Weighted")
-    
+
     plt.tight_layout()
     fig.savefig("dptest.jpg")
     sendimg(["dptest.jpg"])
 
 
 if __name__ == "__main__":
-    
+
     main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
     # main("1015_37head_multitask_1gpu_test")
-    
