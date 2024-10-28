@@ -24,7 +24,6 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str):
         os.remove(outdir+temp_file_name+".pth")
     except:
         print(f"Fail to test {temp_file_name}")
-        # raise # DEBUG
     return dptest_res
 
 def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
@@ -47,8 +46,6 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
                 head_dptest_res[f"{head}  Virial RMSE"] = -1
                 head_dptest_res[f"{head}  Virial MAE/Natoms"] = -1
                 head_dptest_res[f"{head}  Virial RMSE/Natoms"] = -1
-            print(f"{run_id=}, {head=}, {ckpt=}") # DEBUG
-            continue # DEBUG
             Record(
                 run_id=run_id,
                 run_name=temp_file_name,
@@ -64,7 +61,7 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
                 virial_rmse=head_dptest_res[f"{head}  Virial RMSE"],
                 virial_mae_natoms=head_dptest_res[f"{head}  Virial MAE/Natoms"],
                 virial_rmse_natoms=head_dptest_res[f"{head}  Virial RMSE/Natoms"],
-            )#.insert()
+            ).insert()
         elif len(Record.query_by_name(run_name=temp_file_name)) == 1:
             continue
         else:
@@ -100,6 +97,6 @@ def main(exp_path:str, freq:int=200000):
         print("No new ckpt to test.\n")
 
 if __name__ == "__main__":
-    # main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
+    main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
     # main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
-    main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data
+    # main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data
