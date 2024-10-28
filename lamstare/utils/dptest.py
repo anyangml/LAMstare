@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
+
+import yaml
 
 
 
@@ -51,6 +53,25 @@ def extract_valid_path_from_input(input, output):
             for path in valid_paths:
                 f.write(f"{path}\n")
 
+def extract_ood_test_pth_from_yml(input_file, output_path, overwrite:Optional[bool]=False):
+    """
+    A helper function to prepare dptest files using filepath provided in the yaml file.
+    """
+    with open(input_file,"r") as f:
+        yaml_dd = yaml.safe_load(f)
+    mapping = {k:v['filepath'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
+    for ood_dataset, filepaths in mapping.items():
+        tem_output_path = f'{output_path}/{ood_dataset}.txt'
+        if Path(tem_output_path).exists() and not overwrite:
+            print(f"File exists at {tem_output_path}. Skipping.")
+            continue
+        print(f"Writing to {tem_output_path}")
+        with open(tem_output_path, 'w') as f:
+            if filepaths is None:
+                raise ValueError(f"Missing filepath for {ood_dataset}")
+            for path in filepaths:
+                for sys in Path(path).rglob("type_map.raw"):
+                    f.write(f"{sys}\n")
 
 def get_head_weights(exp_path) -> Dict[str,float]:
     """
