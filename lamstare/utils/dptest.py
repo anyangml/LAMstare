@@ -51,6 +51,8 @@ def extract_ood_test_pth_from_yml(input_file, output_path, overwrite:Optional[bo
     """
     A helper function to prepare dptest files using filepath provided in the yaml file.
     """
+    if not Path(output_path).exists():
+        Path(output_path).mkdir()
     with open(input_file,"r") as f:
         yaml_dd =  yaml.safe_load(f)
     mapping = {k:v['filepath'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
@@ -65,7 +67,7 @@ def extract_ood_test_pth_from_yml(input_file, output_path, overwrite:Optional[bo
                 raise ValueError(f"Missing filepath for {ood_dataset}")
             for path in filepaths:
                 for sys in Path(path).rglob("type_map.raw"):
-                    f.write(f"{sys}\n")
+                    f.write(f"{sys.parent}\n")
 
 
 def get_head_weights(run_path) -> Dict[str,float]:
