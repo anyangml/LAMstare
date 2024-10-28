@@ -86,8 +86,8 @@ def main(run_id:str):
                 ax[i][1].axhline(PREVIOUS_BASELINE[head]["rmse_f"],color="red", linestyle="-.")
                 ax[i][2].axhline(PREVIOUS_BASELINE[head]["rmse_v"],color="red", linestyle="-.")
                 if "mae_e" in PREVIOUS_BASELINE[head]:
-                    ax[i][1].axhline(PREVIOUS_BASELINE[head]["mae_e"],color="blue", linestyle="-.")
-                    ax[i][0].axhline(PREVIOUS_BASELINE[head]["mae_f"],color="blue", linestyle="-.")
+                    ax[i][0].axhline(PREVIOUS_BASELINE[head]["mae_e"],color="blue", linestyle="-.")
+                    ax[i][1].axhline(PREVIOUS_BASELINE[head]["mae_f"],color="blue", linestyle="-.")
                     ax[i][2].axhline(PREVIOUS_BASELINE[head]["mae_v"],color="blue", linestyle="-.")
 
             weighted_dptest.append(np.array([

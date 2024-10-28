@@ -2,7 +2,8 @@ IS_MULTI_TASK: true
 OOD_TO_HEAD_MAP:
   ANI: 
     head: Domains_Drug # no path
-    filepath: null
+    filepath: 
+     - /mnt/data_nas/public/public_training_data/wangh-v1.3/Domains/ANI/downstream/
   HEA25S: 
     head: Domains_Alloy
     filepath: 
@@ -34,12 +35,12 @@ OOD_TO_HEAD_MAP:
     filepath: 
       - /mnt/data_nas/public/public_training_data/REANN_CO2_Ni100/train
       - /mnt/data_nas/public/public_training_data/REANN_CO2_Ni100/valid
-  DNPs_RSCDD_2023-Kr: # update name
+  DNPs_2023_Kr: # update name
     head: Domains_Alloy
     filepath: 
       - /mnt/data_nas/public/public_training_data/23-single-Kr/train
       - /mnt/data_nas/public/public_training_data/23-single-Kr/valid
-  Si-ZEO22:
+  Si_ZEO22:
     head: Domains_Cluster
     filepath: 
       - /mnt/data_nas/public/public_training_data/Si-ZEO22/train
@@ -59,12 +60,12 @@ OOD_TO_HEAD_MAP:
     filepath: 
       - /mnt/data_nas/public/public_training_data/Ca-battery/train
       - /mnt/data_nas/public/public_training_data/Ca-battery/valid
-  Perovskite_Marokite_oxides:
+  Perovskite_Marokite:
     head: Domains_FerroEle
     filepath: 
       - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/train
       - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/valid
-  Chig-AIMD_random_train:
+  Chig_AIMD:
     head: Domains_Drug
     filepath: 
       - /mnt/data_nas/public/public_training_data/AIMD-Chig/train
@@ -74,7 +75,7 @@ OOD_TO_HEAD_MAP:
     filepath: 
       - /mnt/data_nas/public/public_training_data/QM9x/train
       - /mnt/data_nas/public/public_training_data/QM9x/valid
-  CGM-MLP_NC2023: # update name
+  CGM_MLP_NC2023: # update name
     head: OC20M
     filepath: 
       - /mnt/data_nas/public/public_training_data/CGM_MLP/train
@@ -89,7 +90,7 @@ OOD_TO_HEAD_MAP:
     filepath: 
       - /mnt/data_nas/public/public_training_data/Cu-MgO-CO2/train
       - /mnt/data_nas/public/public_training_data/Cu-MgO-CO2/valid
-  Liquid_water_interfaces_JC2021: # update name
+  Liquid_water_interfaces: # update name
     head: MP_traj_v024_alldata_mixu
     filepath: 
       - /mnt/data_nas/public/public_training_data/CO_CO_coupling/train

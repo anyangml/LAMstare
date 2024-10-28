@@ -66,16 +66,16 @@ class Record(Base):
     @classmethod
     def query_by_filter(cls, *criteria) -> List["Record"]:
         session = Session()
-        structure = session.query(cls).filter(*criteria).all()
+        record = session.query(cls).filter(*criteria).all()
         session.close()
-        return structure
+        return record
 
     @classmethod
     def query(cls, **kwargs) -> List["Record"]:
         session = Session()
-        structures = session.query(cls).filter_by(**kwargs).order_by(asc(cls.step)).all()
+        records = session.query(cls).filter_by(**kwargs).order_by(asc(cls.step)).all()
         session.close()
-        return structures
+        return records
 
     @classmethod
     def query_by_run(cls, run_id: str) -> List["Record"]:
