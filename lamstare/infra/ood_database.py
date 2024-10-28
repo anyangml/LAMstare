@@ -86,10 +86,3 @@ class OODRecord(Base):
     @classmethod
     def query_by_name(cls, run_name: str) -> List["OODRecord"]:
         return cls.query(run_name=run_name)
-
-    @classmethod
-    def query_like_run_name(cls, pattern: str) -> List["OODRecord"]:
-        session = Session()
-        records = session.query(cls).filter(cls.run_name.like(pattern)).all()
-        session.close()
-        return records

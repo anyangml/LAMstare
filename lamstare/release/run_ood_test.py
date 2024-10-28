@@ -118,9 +118,7 @@ def main(
         avaliable_heads_in_model = set(get_head_weights(exp_path).keys())
         heads_needed = set(mapping.values())
         assert heads_needed.issubset(avaliable_heads_in_model), f"Missing heads in model: {heads_needed - avaliable_heads_in_model}"
-        run_ood_test(exp_path, mapping, model_version, ckpt)
-    else:
-       run_ood_test(exp_path, mapping, model_version, ckpt)
+    run_ood_test(exp_path, mapping, model_version, ckpt)
 
 if __name__ == "__main__":
     # main("", is_multitask=False)
