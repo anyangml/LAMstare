@@ -1,5 +1,9 @@
 from pathlib import Path
-from src.utils.dptest import extract_info_from_dptest_txt, get_head_weights
+from src.utils.dptest import (
+    extract_info_from_dptest_txt,
+    get_head_weights,
+    extract_valid_path_from_input,
+)
 from src.infra import Record
 import subprocess
 import os
@@ -25,19 +29,26 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str):
 
 def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
     run_id=exp_path.split("/")[-1] # Get basename as id
-    heads = list(get_head_weights(exp_path).keys())
+    try:
+        heads = list(get_head_weights(exp_path).keys())
+    except KeyError:
+        heads = [""] # single task
+
+    extract_valid_path_from_input(exp_path+"/input.json",
+        f"/mnt/workspace/public/multitask/eval_scripts/temp_frz_model/{run_id}#{ckpt}") # from single_dptest.sh
+
     for head in heads:
         temp_file_name = f"{run_id}#{ckpt}#{head}"
         if len(Record.query_by_name(run_name=temp_file_name)) == 0:
             head_dptest_res = run_single_head_dptest(exp_path, ckpt, head)
 
             if np.isnan(head_dptest_res[f"{head}  Virial MAE"]):
-                        head_dptest_res[f"{head}  Virial MAE"] = -1
-                        head_dptest_res[f"{head}  Virial RMSE"] = -1
-                        head_dptest_res[f"{head}  Virial MAE/Natoms"] = -1
-                        head_dptest_res[f"{head}  Virial RMSE/Natoms"] = -1
-            # print(f"{run_id=}, {head=}, {ckpt=}")
-            # continue # DEBUG
+                head_dptest_res[f"{head}  Virial MAE"] = -1
+                head_dptest_res[f"{head}  Virial RMSE"] = -1
+                head_dptest_res[f"{head}  Virial MAE/Natoms"] = -1
+                head_dptest_res[f"{head}  Virial RMSE/Natoms"] = -1
+            print(f"{run_id=}, {head=}, {ckpt=}") # DEBUG
+            continue # DEBUG
             Record(
                 run_id=run_id,
                 run_name=temp_file_name,
@@ -53,7 +64,7 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
                 virial_rmse=head_dptest_res[f"{head}  Virial RMSE"],
                 virial_mae_natoms=head_dptest_res[f"{head}  Virial MAE/Natoms"],
                 virial_rmse_natoms=head_dptest_res[f"{head}  Virial RMSE/Natoms"],
-            ).insert()
+            )#.insert()
         elif len(Record.query_by_name(run_name=temp_file_name)) == 1:
             continue
         else:
@@ -90,4 +101,5 @@ def main(exp_path:str, freq:int=200000):
 
 if __name__ == "__main__":
     # main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
-    main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test")
+    # main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
+    main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data

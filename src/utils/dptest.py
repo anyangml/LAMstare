@@ -30,18 +30,27 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[st
 
 
 
-def extract_valid_pth_from_input(input_file, output_pth):
+def extract_valid_path_from_input(input, output):
     """
-    A helper function to prepare dptest files using multitask validation set in `input.json`.
+    A helper function to prepare dp test files using multitask test set in `input`.
+
+    The paths to the test sets will be in `output#{head}_valid.txt`, one system a line.
     """
-    with open(input_file,"r") as f:
+    with open(input,"r") as f:
         dd = json.load(f)
-    heads = list(dd['training']['model_prob'].keys())
+    try:
+        heads = list(dd['training']['model_prob'].keys())
+    except KeyError:
+        heads =[""] # single task
+
     for head in heads:
-        val_pth = dd['training']['data_dict'][head]['validation_data']['systems']
-        with open(f'{output_pth}/{head}.txt', 'w') as f:
-            for pth in val_pth:
-                f.write(f"{pth}\n")
+        if head:
+            valid_paths = dd['training']['data_dict'][head]['validation_data']['systems']
+        else: # single task
+            valid_paths = dd['training']['validation_data']['systems']
+        with open(f'{output}#{head}_valid.txt', 'w') as f:
+            for path in valid_paths:
+                f.write(f"{path}\n")
 
 
 def get_head_weights(exp_path) -> Dict[str,float]:
