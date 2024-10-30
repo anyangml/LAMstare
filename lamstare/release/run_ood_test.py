@@ -92,7 +92,7 @@ def get_latest_ckpt(exp_path: str)->int:
     """
     Get the latest checkpoint number from the experiment folder.
     """
-    with open(exp_path +"/checkpoint","r") as f: # may need update
+    with open(exp_path +"/checkpoint","r") as f:
         lastest_ckpt = int(f.readlines()[0].split("-")[1].split(".")[0])    
     return lastest_ckpt
 

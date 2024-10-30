@@ -1,12 +1,31 @@
 import json
 from pathlib import Path
 from typing import Dict, Optional
-
+import subprocess
+import os
 import yaml
+from dotenv import load_dotenv # type: ignore
+load_dotenv()
 
+temp_file_path = os.environ.get("TEMP_FILE_DIR")
+assert temp_file_path is not None, "TEMP_FILE_DIR is not set in .env"
 
+# DP-test related functions
+def run_single_head_dptest(exp_path:str, ckpt:int, head:str):
+    dptest_res = {}
+    run_id=exp_path.split("/")[-1] # Get basename as id
+    temp_file_name = f"{run_id}#{ckpt}#{head}"
+    try:
+        script_path = os.path.join(os.path.dirname(__file__), "single_dptest.sh")
+        print(f"Executing command: {script_path} {exp_path} {ckpt} {head}")
+        subprocess.run([script_path, exp_path, str(ckpt), head, temp_file_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        dptest_res = extract_info_from_dptest_txt(f"{head} ",temp_file_path+temp_file_name+".txt")
+        os.remove(temp_file_path+temp_file_name+".txt")
+        os.remove(temp_file_path+temp_file_name+".pth")
+    except:
+        print(f"Fail to test {temp_file_name}")
+    return dptest_res
 
-# DP-test
 
 def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[str,float]:
     """
