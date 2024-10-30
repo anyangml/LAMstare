@@ -1,6 +1,6 @@
 import yaml
 from typing import Optional, Tuple, Dict
-from lamstare.utils.dptest import extract_ood_test_pth_from_yml, get_head_weights
+from lamstare.utils.dptest import extract_ood_test_pth_from_yml, get_head_weights, run_single_head_dptest
 from lamstare.infra.ood_database import OODRecord
 import numpy as np
 
@@ -42,12 +42,6 @@ def get_ood_to_head_map(mapping_path: str = "OOD_DATASET.yml", output_path:str =
     return mapping, is_multitask
 
 
-def run_ood_test_single_task(exp_path: str, ckpt: Optional[int] = None, head: Optional[str] = None)->None:
-    """
-    This should be a reused function for running OOD test for a single task model or single head for a multitask model.
-    """
-    pass
-
 def run_ood_test(exp_path: str, mapping:dict, model_version:str, ckpt: Optional[int] = None)->None:
     """
     This should be a loop through all heads and call run_ood_test_single_task.
@@ -56,7 +50,7 @@ def run_ood_test(exp_path: str, mapping:dict, model_version:str, ckpt: Optional[
     for ood_dataset, head in mapping.items():
         temp_file_name = f"{run_id}#{ckpt}#{ood_dataset}#{head}"
         if len(OODRecord.query_by_name(run_name=temp_file_name)) == 0:
-            head_dptest_res = run_ood_test_single_task(exp_path, ckpt, head)
+            head_dptest_res = run_single_head_dptest(exp_path, ckpt, head)
 
             if np.isnan(head_dptest_res[f"{ood_dataset}  Virial MAE"]):
                         head_dptest_res[f"{ood_dataset}  Virial MAE"] = -1

@@ -84,6 +84,5 @@ def main(exp_path:str, freq:int=200000):
         print("No new ckpt to test.\n")
 
 if __name__ == "__main__":
-    main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
-    # main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
+    main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
     # main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data
