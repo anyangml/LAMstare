@@ -5,7 +5,8 @@ import os
 import sys
 load_dotenv()
 
-def submit_dptest_job_to_dlc(job_name:str):
+def submit_dptest_job_to_dlc(exp_path:str):
+    job_name = exp_path.split("/")[-1]
     docker_image = os.environ.get("DOCKER_IMAGE")
     data_sources = os.environ.get("DATA_SOURCES")
     workspace_id = os.environ.get("WORKSPACE_ID")
@@ -23,7 +24,7 @@ def submit_dptest_job_to_dlc(job_name:str):
             f". /mnt/data_nas/public/.bashrc \n" \
             f"conda activate /mnt/data_nas/public/Miniconda/envs/{venv} \n" \
             f"cd {lamstare_path} \n" \
-            f"python lamstare/experiments/run_dptest.py \n" \
+            f"python lamstare/experiments/run_test.py {exp_path} \n" \
             
 
     cmd = ['/mnt/data_nas/penganyang/dlc', 'submit', 'pytorchjob']
@@ -46,4 +47,5 @@ def submit_dptest_job_to_dlc(job_name:str):
         raise RuntimeError(f"{job_name} failed")
     
 if __name__ == "__main__":
-    submit_dptest_job_to_dlc(sys.argv[1])
+    for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
+        submit_dptest_job_to_dlc(exp_path) # abosulute path to the experiment folder

@@ -8,6 +8,7 @@ from lamstare.infra import Record
 import numpy as np
 from dotenv import load_dotenv # type: ignore
 import os
+import sys
 load_dotenv()
 
 temp_file_path = os.environ.get("TEMP_FILE_DIR")
@@ -84,5 +85,6 @@ def main(exp_path:str, freq:int=200000):
         print("No new ckpt to test.\n")
 
 if __name__ == "__main__":
-    main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
+    main(sys.argv[1])
+    # main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
     # main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data

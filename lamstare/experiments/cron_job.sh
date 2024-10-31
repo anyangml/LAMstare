@@ -1,5 +1,6 @@
 #!/bin/bash
 
-source /mnt/workspace/public/Miniconda/etc/profile.d/conda.sh # may need update
-conda activate openlam_db # may need update
-python /mnt/data_nas/public/multitask/eval_scripts/run_dptest.py # may need update --> update to call dlc_submit
+source /mnt/data_nas/public/Miniconda/etc/profile.d/conda.sh # may need update
+conda activate lamsatre # may need update
+bash /mnt/data_nas/penganyang/renew_dlc.sh # to renew dlc credential
+python /mnt/data_nas/public/multitask/LAMstare/lamstare/utils/dlc_submit.py # may need update --> update to call dlc_submit
