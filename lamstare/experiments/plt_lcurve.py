@@ -3,6 +3,7 @@ from lamstare.utils.plot import fetch_lcurve, sendimg
 from lamstare.utils.dptest import get_head_weights
 import matplotlib.pyplot as plt
 import json
+import sys
 
 BASELINE_MAP = {} # Dict[str, str] --> head-name : absolute_path_to_experiment_folder
 
@@ -57,4 +58,5 @@ def main(exp_path:str, roll:int=50):
     sendimg(["lcurve.jpg"])
 
 if __name__ == "__main__":
-    main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
+    main(sys.argv[1])
+    # main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")

@@ -5,6 +5,7 @@ from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import sys
 
 with open("/mnt/data_nas/public/multitask/eval_scripts/baseline_stat.json","r") as f:
     PREVIOUS_BASELINE = json.load(f)
@@ -120,6 +121,6 @@ def main(exp_path:str):
 
 
 if __name__ == "__main__":
-
-    main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
+    main(sys.argv[1])
+    # main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
     # main("1015_37head_multitask_1gpu_test")
