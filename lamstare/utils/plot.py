@@ -59,7 +59,7 @@ def uploadImage(token, file):
     return response["data"]["image_key"]
 
 
-def send2bot(img_keys):
+def send2bot(img_keys, title:str):
     """
     Send POST request to Feishu bot with all the image keys.
     """
@@ -72,13 +72,13 @@ def send2bot(img_keys):
     data = {
         "msg_type": "post",
         "content": {
-            "post": {"zh_cn": {"title": "Experiment Tracking", "content": [content]}}
+            "post": {"zh_cn": {"title": title, "content": [content]}}
         },
     }
     response = requests.request("POST", url, headers=headers, json=data)
 
 
-def sendimg(files: List[str]):
+def sendimg(files: List[str], title:str):
     """
     Given a list of file path, send these images to Feishu bot.
     """
@@ -86,5 +86,5 @@ def sendimg(files: List[str]):
     token = get_tat_token()
     for file in files:
         img_keys.append(uploadImage(token, file))
-    send2bot(img_keys)
+    send2bot(img_keys, title)
 
