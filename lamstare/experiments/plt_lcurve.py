@@ -14,11 +14,11 @@ else:
 
 
 
-def main(run_pth, roll:int=50):
-    weights = get_head_weights(run_pth)
-    heads = list(get_head_weights(run_pth).keys())
+def main(exp_path:str, roll:int=50):
+    weights = get_head_weights(exp_path)
+    heads = list(get_head_weights(exp_path).keys())
     n_heads = len(heads)
-    mult_hist = fetch_lcurve(run_pth)
+    mult_hist = fetch_lcurve(exp_path)
     fig, ax = plt.subplots(n_heads, 3, figsize=(12,2*n_heads+1),sharex=True)
     for i, head in enumerate(heads):
         ax[i][0].loglog(mult_hist["step"], mult_hist[f"rmse_e_trn_{head}"].rolling(roll).mean(), linestyle='-',color="blue")
@@ -57,5 +57,4 @@ def main(run_pth, roll:int=50):
     sendimg(["lcurve.jpg"])
 
 if __name__ == "__main__":
-    run_pth = "/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh"
-    main(run_pth)
+    main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")

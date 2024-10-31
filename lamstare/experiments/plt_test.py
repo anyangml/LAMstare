@@ -59,9 +59,9 @@ def parse_record_dict(all_records:dict) -> dict:
     return parsed_records
 
 
-def main(run_id:str):
-    run_pth = "/mnt/data_nas/public/multitask/training_exps/"+run_id
-    weights = get_head_weights(run_pth)
+def main(exp_path:str):
+    run_id=exp_path.split("/")[-1] # Get basename as id
+    weights = get_head_weights(exp_path)
     heads = list(weights.keys())
     n_heads = len(heads)
     fig, ax = plt.subplots(n_heads+1, 3, figsize=(12,2*n_heads+3),sharex=True)
@@ -121,5 +121,5 @@ def main(run_id:str):
 
 if __name__ == "__main__":
 
-    main("1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
+    main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
     # main("1015_37head_multitask_1gpu_test")
