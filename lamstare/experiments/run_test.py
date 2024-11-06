@@ -28,6 +28,7 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
         temp_file_name = f"{run_id}#{ckpt}#{head}"
         if len(Record.query_by_name(run_name=temp_file_name)) == 0:
             head_dptest_res = run_single_head_dptest(exp_path, ckpt, head)
+            print(head_dptest_res)
 
             if np.isnan(head_dptest_res[f"{head}  Virial MAE"]):
                 head_dptest_res[f"{head}  Virial MAE"] = -1
