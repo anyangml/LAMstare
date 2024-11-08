@@ -2,7 +2,7 @@ from pathlib import Path
 from lamstare.utils.dptest import (
     get_head_weights,
     extract_valid_path_from_input,
-    run_single_head_dptest,
+    run_dptest,
 )
 from lamstare.infra import Record
 import numpy as np
@@ -14,22 +14,25 @@ load_dotenv()
 temp_file_path = os.environ.get("TEMP_FILE_DIR")
 assert temp_file_path is not None, "TEMP_FILE_DIR is not set in .env"
 
-def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
+def dptest_one_cpkt_on_all_heads(exp_path:str, step: int):
     run_id=exp_path.split("/")[-1] # Get basename as id
     try:
         heads = list(get_head_weights(exp_path).keys())
     except KeyError:
         heads = [""] # single task
-
+    test_files_dir = "/tmp/"
     extract_valid_path_from_input(exp_path+"/input.json",
-        f"{temp_file_path}{run_id}#{ckpt}") # may need a proper teardown
+        test_files_dir) # may need a proper teardown
 
     for head in heads:
-        temp_file_name = f"{run_id}#{ckpt}#{head}"
+        temp_file_name = f"{run_id}#{step}#{head}"
         if len(Record.query_by_name(run_name=temp_file_name)) == 0:
-            head_dptest_res = run_single_head_dptest(exp_path, ckpt, head)
+            checkpoint_path = Path(f"{exp_path}/model.ckpt-{step}.pt")
+            head_dptest_res = run_dptest(
+                checkpoint_path, head, Path(f"{test_files_dir}#{head}_valid.txt")
+            )
             print(head_dptest_res)
-
+            exit(0)
             if np.isnan(head_dptest_res[f"{head}  Virial MAE"]):
                 head_dptest_res[f"{head}  Virial MAE"] = -1
                 head_dptest_res[f"{head}  Virial RMSE"] = -1
@@ -38,7 +41,7 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, ckpt: int):
             Record(
                 run_id=run_id,
                 run_name=temp_file_name,
-                step=ckpt,
+                step=step,
                 head=head,
                 energy_mae=head_dptest_res[f"{head}  Energy MAE"],
                 energy_rmse=head_dptest_res[f"{head}  Energy RMSE"],
