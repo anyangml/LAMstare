@@ -26,7 +26,7 @@ def send2table(
     )
     if method == "put":
         assert record_id is not None, "record_id is required for put method"
-        record_url += "/{record_id}"
+        record_url = f"{record_url}/{record_id}"
 
     headers = {
         "Authorization": f"Bearer {get_tat_token()}",
@@ -95,6 +95,7 @@ def fetch_ood_res(exp_path: str, weights: dict, weights_v: dict) -> dict:
     data["weighted_e_rmse"] = cal_weighted_log_mean(rmse_e, weights)
     data["weighted_f_rmse"] = cal_weighted_log_mean(rmse_f, weights)
     data["weighted_v_rmse"] = cal_weighted_log_mean(rmse_v, weights_v)
+    return data
 
 
 def cal_weighted_log_mean(rmses: dict, weights: dict):
