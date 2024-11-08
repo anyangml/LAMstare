@@ -69,10 +69,12 @@ def fet_records_from_table():
 
 def fetch_ood_res(exp_path: str, weights: dict, weights_v: dict) -> dict:
     run_id = exp_path.split("/")[-1]  # Get basename as id
-    runs = OODRecord.query_by_run(run_id)
-    # update query to return best among heads
-    if len(runs) != len(weights):
+    runs = OODRecord.query_best_by_run(run_id)
+    
+    if len(runs) < len(weights):
         print(f"Warning: missing dptest res for {run_id}")
+    elif len(runs) > len(weights):
+        print(f"Warning: more dptest res for {run_id}")
 
     data = {}
     rmse_e = {}
