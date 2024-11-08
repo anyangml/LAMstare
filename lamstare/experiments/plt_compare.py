@@ -72,9 +72,9 @@ def compare_dptest(exps: Dict[str,str], exp_name:str, key:str):
                     ax[i][2].set_ylabel(f"Virial_{head}")
 
                     if head in PREVIOUS_BASELINE:
-                        ax[i][0].axhline(PREVIOUS_BASELINE[head]["mae_e"],color="green", linestyle="-.")
-                        ax[i][1].axhline(PREVIOUS_BASELINE[head]["mae_f"],color="green", linestyle="-.")
-                        ax[i][2].axhline(PREVIOUS_BASELINE[head]["mae_v"],color="green", linestyle="-.")
+                        ax[i][0].axhline(PREVIOUS_BASELINE[head][f"{key}_e"],color="green", linestyle="-.")
+                        ax[i][1].axhline(PREVIOUS_BASELINE[head][f"{key}_f"],color="green", linestyle="-.")
+                        ax[i][2].axhline(PREVIOUS_BASELINE[head][f"{key}_v"],color="green", linestyle="-.")
 
                     weighted_dptest.append(np.array([
                     all_records[head][f"ener_{key}"],
@@ -185,5 +185,5 @@ if __name__ == "__main__":
         # "/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test":""
     }
     compare_lcurve(exps, "Compare 37head")
-    compare_dptest_mae(exps, "Compare 37head")
-    compare_dptest_rmse(exps, "Compare 37head")
+    # compare_dptest_mae(exps, "Compare 37head")
+    compare_dptest_rmse(exps, "Compare 37head-IDTest")
