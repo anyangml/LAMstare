@@ -52,7 +52,11 @@ def run_dptest(
     if ret != 0:
         raise RuntimeError(f"Failed to freeze model {model}")
     test_result = frozen_model.parent / f"{frozen_model.name}.txt"
-    os.system(f"dp --pt test -m {frozen_model} -f {testfile} -l {test_result}")
+    command = f"dp --pt test -m {frozen_model} -f {testfile} -l {test_result}"
+    logging.warning(command)
+    ret = os.system(command)
+    if ret != 0:
+        raise RuntimeError(f"Failed to test model {frozen_model}")
     result = extract_info_from_dptest_txt(head, test_result)
     return result
 
@@ -146,6 +150,7 @@ def extract_valid_path_from_input(input, output):
         else: # single task
             valid_paths = dd['training']['validation_data']['systems']
         with open(f'{output}#{head}_valid.txt', 'w') as f:
+            logging.warning(f"Writing to {output}#{head}_valid.txt")
             for path in valid_paths:
                 f.write(f"{path}\n")
 
