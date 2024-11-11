@@ -3,9 +3,6 @@ from dotenv import load_dotenv
 import os
 import logging
 
-from lamstare.release.submit_ood_test import main as main_ood
-from lamstare.experiments.run_test import main as main_ind
-
 load_dotenv()
 
 def query_job_numbers(job_name:str):
@@ -67,9 +64,3 @@ def submit_dptest_job_to_dlc(exp_path:str):
             f"python lamstare/experiments/run_test.py {exp_path} \n" \
 
     submit_job_to_dlc(job_name,command)
-
-if __name__ == "__main__":
-    freq=200_000
-    for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
-        main_ind(exp_path, freq)
-        main_ood(exp_path, freq)
