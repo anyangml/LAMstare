@@ -133,3 +133,9 @@ OOD_TO_HEAD_MAP:
       - /mnt/data_nas/public/public_training_data/CO_CO_coupling/valid_downsample_5k
     weights: 1
     test_virial: false
+  Sub_Alex_val: # update name
+    head: MP_traj_v024_alldata_mixu
+    filepath:
+      - /mnt/data_nas/public/public_training_data/Sub_Alex_val
+    weights: 1
+    test_virial: false
