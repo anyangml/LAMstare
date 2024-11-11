@@ -72,7 +72,7 @@ def find_ckpt_to_test_cron(exp_path: str, freq: int, record_type: type[Record]) 
 
 
 def main(exp_path: str, freq: int = 200000):
-    need_to_test = find_ckpt_to_test_cron(exp_path, freq)
+    need_to_test = find_ckpt_to_test_cron(exp_path, freq, Record)
     if need_to_test is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
         submit_ind_test(exp_path, need_to_test)

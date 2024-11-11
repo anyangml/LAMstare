@@ -83,7 +83,6 @@ def submit_ood_test(
     export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new:$PYTHONPATH
     cd /mnt/data_nas/cc/LAMstare_new/lamstare/release
 
-    export OOD_TABLE_NAME=test_test # OPTIONAL; default: ood_test_res
     export CONDA_ENV=openlam_db # OPTIONAL; default: ood_test_res
     python3 submit_ood_test.py /mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l8_atton_37head_tanh_40GPU_bs_auto128
     ```
@@ -146,7 +145,7 @@ def main(exp_path: str, freq: int = 200000):
     need_to_test = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
     if need_to_test is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
-        submit_ood_test(exp_path=exp_path, model_version="autotest", step=need_to_test, is_multitask=False)
+        submit_ood_test(exp_path=exp_path, model_version="autotest", mapping_path="/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml",step=need_to_test, is_multitask=False)
     else:
         print("No new ckpt to test.\n")
     # TODO: add an interface for it
