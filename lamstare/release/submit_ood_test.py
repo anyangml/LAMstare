@@ -79,7 +79,7 @@ def main(
 
     ```
     source /mnt/data_nas/cc/.bashrc
-    export PYTHONPATH=/mnt/workspace/cc/LAMstare_new:$PYTHONPATH
+    export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new:$PYTHONPATH
     cd /mnt/data_nas/cc/LAMstare_new/lamstare/release
 
     export OOD_TABLE_NAME=test_test # OPTIONAL; default: ood_test_res

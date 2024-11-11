@@ -81,7 +81,6 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[
             )
             command += " ".join(args)
             command += '"'
-            command.replace("workspace","data_nas")
             print("Executing command: ", command)
             submit_job_to_dlc(f"OOD_TEST_{ood_name}_{run_id}", command)
             return None
