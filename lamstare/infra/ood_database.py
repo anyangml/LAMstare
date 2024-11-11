@@ -28,7 +28,7 @@ Session = sessionmaker(db)
 
 
 class OODRecord(Base):
-    __tablename__ = "release_ood"
+    __tablename__ = os.environ.get("OOD_TABLE_NAME","ood_test_res")
 
     id = Column(Integer, primary_key=True)
     run_id = Column(String(256), index=True)
@@ -47,7 +47,7 @@ class OODRecord(Base):
     virial_mae = Column(Float)
     virial_rmse_natoms = Column(Float)
     virial_mae_natoms = Column(Float)
-    
+
     def __repr__(self):
         return "<OODRecord id=%s step='%s' head='%s' Energy MAE/Natoms=%s>" % (
             self.run_id,
@@ -82,7 +82,7 @@ class OODRecord(Base):
     @classmethod
     def query_by_run(cls, run_id: str) -> List["OODRecord"]:
         return cls.query(run_id=run_id)
-    
+
     @classmethod
     def query_by_name(cls, run_name: str) -> List["OODRecord"]:
         return cls.query(run_name=run_name)

@@ -100,18 +100,18 @@ def main(
             if USE_DLC:
                 command = (
                     ". /mnt/data_nas/public/.bashrc; "
-                    "conda activate /mnt/data_nas/public/Miniconda/envs/lamstare;"
+                    f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
                     "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                     f"cd {Path(__file__).resolve().parent} ; "
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"
                 )
                 logging.debug(f"Job command: \n{command}")
-                # os.system(command) # debug
                 job_name=f"TEST-{run_id}-{ood_dataset}"
                 if query_job_numbers(job_name):
                     logging.warning(f"SKIPPED: {job_name} is already running.")
                 else:
                     submit_job_to_dlc(job_name,command)
+                # Check submission: https://pai.console.aliyun.com/?regionId=cn-beijing&workspaceId=177142#/dlc/jobs
             else:
                 run_ood_test(
                     exp_path,
@@ -122,6 +122,7 @@ def main(
                     testfile,
                     run_name,
                 )
+                # os.system(command) # Optional: run locally
         elif record_count == 1:
             logging.info(f"SKIPPED: {run_name} already exists.")
         else:
