@@ -6,6 +6,7 @@ from typing import Dict, Optional, Tuple
 
 import yaml
 
+from lamstare.experiments.run_test import find_ckpt_to_test_cron
 from lamstare.infra.ood_database import OODRecord
 from lamstare.release.run_ood_test import run_ood_test
 from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
@@ -64,7 +65,7 @@ def get_latest_ckpt(exp_path: str) -> int:
     return lastest_ckpt
 
 
-def main(
+def submit_ood_test(
     exp_path: str,
     model_version: str,
     step: Optional[int] = None,
@@ -141,7 +142,16 @@ def main(
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
 
 
+def main(exp_path: str, freq: int = 200000):
+    need_to_test = find_ckpt_to_test_cron(exp_path, freq)
+    if need_to_test is not None:
+        print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
+        submit_ood_test(exp_path=exp_path, model_version="autotest", step=need_to_test, is_multitask=False)
+    else:
+        print("No new ckpt to test.\n")
+    # TODO: add an interface for it
+
 if __name__ == "__main__":
     path = sys.argv[1]
     logging.basicConfig(level=logging.DEBUG)
-    main(path, "b4_release", is_multitask=False)
+    submit_ood_test(path, "b4_release", is_multitask=False)
