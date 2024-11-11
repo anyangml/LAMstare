@@ -1,16 +1,15 @@
 import logging
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
+from typing import Dict, Optional, Tuple
+
 import yaml
+
 from lamstare.infra.ood_database import OODRecord
 from lamstare.release.run_ood_test import run_ood_test
 from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
-from lamstare.utils.dptest import (
-    extract_ood_test_pth_from_yml,
-    get_head_weights,
-)
-from typing import Optional, Tuple, Dict
+from lamstare.utils.dptest import extract_ood_test_pth_from_yml, get_head_weights
 
 
 def get_ood_to_head_map(
@@ -74,6 +73,20 @@ def main(
     output_path: str = "./testood",
     overwrite: Optional[bool] = False,
 ) -> None:
+    """Submit OOD test jobs to DLC.
+
+    Usage:
+
+    ```
+    source /mnt/data_nas/cc/.bashrc
+    export PYTHONPATH=/mnt/workspace/cc/LAMstare_new:$PYTHONPATH
+    cd /mnt/data_nas/cc/LAMstare_new/lamstare/release
+
+    export OOD_TABLE_NAME=test_test # OPTIONAL; default: ood_test_res
+    export CONDA_ENV=openlam_db # OPTIONAL; default: ood_test_res
+    python3 submit_ood_test.py /mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l8_atton_37head_tanh_40GPU_bs_auto128
+    ```
+    """
 
     # generate test file from input.json
     mapping, is_multitask = get_ood_to_head_map(
@@ -89,12 +102,11 @@ def main(
             avaliable_heads_in_model
         ), f"Missing heads in model: {heads_needed - avaliable_heads_in_model}"
 
-    USE_DLC = False
     USE_DLC = True
     for ood_dataset, head in reversed(mapping.items()):
         testfile = Path(output_path) / f"{ood_dataset}.txt"
         run_id = exp_path.split("/")[-1]  # Get basename as id
-        run_name = f"{run_id}#{step}#{ood_dataset}#{head}"  # we don't change it since it is used as the key in DB
+        run_name = f"{run_id}#{step}#{ood_dataset}#{head}"  # the index to identify each run in DB
         record_count = len(OODRecord.query_by_name(run_name=run_name))
         if record_count == 0:
             if USE_DLC:
@@ -106,11 +118,11 @@ def main(
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"
                 )
                 logging.debug(f"Job command: \n{command}")
-                job_name=f"TEST-{run_id}-{ood_dataset}"
+                job_name = f"TEST-{run_id}-{ood_dataset}"
                 if query_job_numbers(job_name):
                     logging.warning(f"SKIPPED: {job_name} is already running.")
                 else:
-                    submit_job_to_dlc(job_name,command)
+                    submit_job_to_dlc(job_name, command)
                 # Check submission: https://pai.console.aliyun.com/?regionId=cn-beijing&workspaceId=177142#/dlc/jobs
             else:
                 run_ood_test(
@@ -131,6 +143,5 @@ def main(
 
 if __name__ == "__main__":
     path = sys.argv[1]
-    # e.g. "/mnt/data_nas/public/multitask/training_exps/1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256"
     logging.basicConfig(level=logging.DEBUG)
     main(path, "b4_release", is_multitask=False)

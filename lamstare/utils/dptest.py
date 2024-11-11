@@ -1,15 +1,17 @@
 import json
 import logging
 import os
-import yaml
-
-from dotenv import load_dotenv
-from lamstare.utils.dlc_submit import submit_job_to_dlc
 from pathlib import Path
 from typing import Dict, Optional
 
+import yaml
+from dotenv import load_dotenv
+
+from lamstare.utils.dlc_submit import submit_job_to_dlc
+
 load_dotenv()
 
+# Deprecated
 try:
     temp_file_path = os.environ["TEMP_FILE_DIR"]
     os.mkdir(temp_file_path)
@@ -20,23 +22,17 @@ except FileExistsError:
 
 
 def run_dptest(
-    ckpt: Path,
+    ckpt: Path, # Path to the .pt model checkpoint FILE
     head: str,
     testfile: Path,
     ood_name: str = "",
 ):
-    # make a unique temp dir
-    workdir = f"{temp_file_path}/{ckpt.stem}-{ood_name}-{head}/"
-    try:
-        os.mkdir(workdir)
-    except FileExistsError:
-        pass
-
     model:Path = ckpt
+    temp_path = Path("/tmp")
+    # We use /tmp as a local working directory, which is not shared across nodes and automatically cleaned up on job finishes.
 
-    temp_path = Path("/tmp") # FIXME
+    # I. Change bias for OOD dataset
     if ood_name:
-        # add "change-bias-" to the model basename
         model = temp_path / f"change-bias-{ckpt.name}"
         command = (
             f"dp --pt change-bias {ckpt} -o {model} -f {testfile} --model-branch {head}"
@@ -45,12 +41,14 @@ def run_dptest(
         ret = os.system(command)
         if ret != 0:
             raise RuntimeError(f"Failed to change bias for {model}")
+    # II. Freeze model
     frozen_model = model.with_suffix(".pth")
     command = f"dp --pt freeze -c {model} -o {frozen_model} {f'--head {head}' if head else ''}"
     logging.warning(command)
     ret = os.system(command)
     if ret != 0:
         raise RuntimeError(f"Failed to freeze model {model}")
+    # III. Test model
     test_result = frozen_model.parent / f"{frozen_model.name}.txt"
     command = f"dp --pt test -m {frozen_model} -f {testfile} -l {test_result}"
     logging.warning(command)
@@ -61,7 +59,6 @@ def run_dptest(
     return result
 
 
-# DP-test related functions
 def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[str], ood_name:str) -> Dict[str,float]:
     logging.error("This function is deprecated. Please use run_dptest instead.")
     dptest_res = {}

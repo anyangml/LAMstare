@@ -1,4 +1,3 @@
-import argparse
 import logging
 from pathlib import Path
 import sys
@@ -7,6 +6,7 @@ from lamstare.infra.ood_database import OODRecord
 import numpy as np
 
 from lamstare.utils.dptest import run_dptest
+
 
 def run_ood_test(
     exp_path: str,
@@ -43,13 +43,18 @@ def run_ood_test(
         virial_rmse=head_dptest_res[f"{head} Virial RMSE"],
         virial_mae_natoms=head_dptest_res[f"{head} Virial MAE/Natoms"],
         virial_rmse_natoms=head_dptest_res[f"{head} Virial RMSE/Natoms"],
-    ) .insert() # FIXME
+    ).insert()
 
 
 def main():
+    # Example usage:
+    # python3 run_ood_test.py /mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU COLL_train Organic_Reactions b4_release 1000000 testood/COLL_train.txt 1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU#1000000#COLL_train#Organic_Reactions
     logging.basicConfig(level=logging.DEBUG)
     exp_path, ood_dataset, head, model_version, step, testfile, run_name = sys.argv[1:]
-    run_ood_test(exp_path, ood_dataset, head, model_version, int(step), Path(testfile), run_name)
+    run_ood_test(
+        exp_path, ood_dataset, head, model_version, int(step), Path(testfile), run_name
+    )
+
 
 if __name__ == "__main__":
     main()
