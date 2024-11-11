@@ -143,7 +143,7 @@ def submit_ood_test(
 
 
 def main(exp_path: str, freq: int = 200000):
-    need_to_test = find_ckpt_to_test_cron(exp_path, freq)
+    need_to_test = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
     if need_to_test is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
         submit_ood_test(exp_path=exp_path, model_version="autotest", step=need_to_test, is_multitask=False)

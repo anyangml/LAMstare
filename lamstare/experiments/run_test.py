@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from dotenv import load_dotenv  # type: ignore
+from dotenv import load_dotenv
+
 load_dotenv()
 
 from lamstare.infra import Record
@@ -48,7 +49,7 @@ def submit_ind_test(exp_path: str, step: int):
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
 
 
-def find_ckpt_to_test_cron(exp_path: str, freq: int) -> Optional[int]:
+def find_ckpt_to_test_cron(exp_path: str, freq: int, record_type: type[Record]) -> Optional[int]:
     ckpt_pth = Path(exp_path)
     with open(ckpt_pth / "checkpoint", "r") as f:
         latest_ckpt = int(f.readlines()[0].split("-")[1].split(".")[0])
@@ -56,8 +57,8 @@ def find_ckpt_to_test_cron(exp_path: str, freq: int) -> Optional[int]:
     exp_path = str(ckpt_pth.resolve())
     # Get basename
     run_id = exp_path.split("/")[-1]
-    if len(Record.query(run_id=run_id)) > 0:
-        previous_tested_step = int(Record.query(run_id=run_id)[-1].step)  # type: ignore
+    if len(record_type.query(run_id=run_id)) > 0:
+        previous_tested_step = int(record_type.query(run_id=run_id)[-1].step)  # type: ignore
     else:
         previous_tested_step = 0
     print(

@@ -69,6 +69,7 @@ def submit_dptest_job_to_dlc(exp_path:str):
     submit_job_to_dlc(job_name,command)
 
 if __name__ == "__main__":
+    freq=200_000
     for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
-        main_ind(exp_path)
-        main_ood(exp_path)
+        main_ind(exp_path, freq)
+        main_ood(exp_path, freq)
