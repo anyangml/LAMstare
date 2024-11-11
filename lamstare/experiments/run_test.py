@@ -25,14 +25,14 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, step: int):
         test_files_dir) # may need a proper teardown
 
     for head in heads:
-        temp_file_name = f"{run_id}#{step}#{head}"
-        if len(Record.query_by_name(run_name=temp_file_name)) == 0:
+        run_name = f"{run_id}#{step}#{head}"
+        record_count = len(Record.query_by_name(run_name=run_name))
+        if record_count == 0:
             checkpoint_path = Path(f"{exp_path}/model.ckpt-{step}.pt")
             head_dptest_res = run_dptest(
                 checkpoint_path, head, Path(f"{test_files_dir}#{head}_valid.txt")
             )
             print(head_dptest_res)
-            exit(0)
             if np.isnan(head_dptest_res[f"{head}  Virial MAE"]):
                 head_dptest_res[f"{head}  Virial MAE"] = -1
                 head_dptest_res[f"{head}  Virial RMSE"] = -1
@@ -40,7 +40,7 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, step: int):
                 head_dptest_res[f"{head}  Virial RMSE/Natoms"] = -1
             Record(
                 run_id=run_id,
-                run_name=temp_file_name,
+                run_name=run_name,
                 step=step,
                 head=head,
                 energy_mae=head_dptest_res[f"{head}  Energy MAE"],
@@ -54,10 +54,10 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, step: int):
                 virial_mae_natoms=head_dptest_res[f"{head}  Virial MAE/Natoms"],
                 virial_rmse_natoms=head_dptest_res[f"{head}  Virial RMSE/Natoms"],
             ).insert()
-        elif len(Record.query_by_name(run_name=temp_file_name)) == 1:
+        elif record_count == 1:
             continue
         else:
-            print(f"{temp_file_name} has multiple records, please check!!!")
+            print(f"{run_name} has multiple records, please check!!!")
 
 
 def find_ckpt_to_test_cron(exp_path:str, freq:int):
