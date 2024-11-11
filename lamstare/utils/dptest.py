@@ -63,6 +63,7 @@ def run_dptest(
 
 # DP-test related functions
 def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[str], ood_name:str) -> Dict[str,float]:
+    logging.error("This function is deprecated. Please use run_dptest instead.")
     dptest_res = {}
     run_id=exp_path.split("/")[-1] # Get basename as id
     temp_file_name = f"{run_id}#{ckpt}#{head}"
@@ -77,7 +78,7 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[
             args = [script_path, exp_path, str(ckpt), head, temp_file_dir, test_file]
             command = (
                 f'". /mnt/data_nas/public/.bashrc;'
-                f"conda activate /mnt/data_nas/public/Miniconda/envs/devel0813;"
+                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
                 f"cd /mnt/data_nas/cc/LAMstare/lamstare/release;"
                 f"export TEMP_FILE_DIR={temp_file_dir};"
             )
@@ -93,7 +94,7 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[
             # check if "weighted average of errors" is in the file
             with open(result_file, "r") as f:
                 content = f.read()
-            if True or "weighted average of errors" in content:
+            if "weighted average of errors" in content:
                 print(f"job {temp_file_dir} already finished")
                 dptest_res = extract_info_from_dptest_txt(head, result_file)
                 # shutil.rmtree(temp_file_dir)
