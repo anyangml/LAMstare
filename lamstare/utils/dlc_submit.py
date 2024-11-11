@@ -2,6 +2,10 @@ import subprocess
 from dotenv import load_dotenv
 import os
 import logging
+
+from lamstare.release.submit_ood_test import main as main_ood
+from lamstare.experiments.run_test import main as main_ind
+
 load_dotenv()
 
 def query_job_numbers(job_name:str):
@@ -47,12 +51,12 @@ def submit_job_to_dlc(job_name:str, command:str):
     except Exception as e:
         logging.error(f"An error occurred while submitting the job: {e}")
 
-
+# deprecated
 def submit_dptest_job_to_dlc(exp_path:str):
     job_name = exp_path.split("/")[-1]
 
-    venv = os.environ.get("VENV")
-    lamstare_path = os.environ.get("ROOT_DIR")
+    venv = os.environ["VENV"]
+    lamstare_path = os.environ["ROOT_DIR"]
 
     job_name = f"AUTOTEST_{job_name}"
 
@@ -66,4 +70,5 @@ def submit_dptest_job_to_dlc(exp_path:str):
 
 if __name__ == "__main__":
     for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
-        submit_dptest_job_to_dlc(exp_path) # abosulute path to the experiment folder
+        main_ind(exp_path)
+        main_ood(exp_path)

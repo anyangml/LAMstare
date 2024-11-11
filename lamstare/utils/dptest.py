@@ -42,7 +42,7 @@ def run_dptest(
         if ret != 0:
             raise RuntimeError(f"Failed to change bias for {model}")
     # II. Freeze model
-    frozen_model = model.with_suffix(".pth")
+    frozen_model = temp_path / model.with_suffix(".pth").name
     command = f"dp --pt freeze -c {model} -o {frozen_model} {f'--head {head}' if head else ''}"
     logging.warning(command)
     ret = os.system(command)
@@ -128,28 +128,30 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[st
     return metrics
 
 
-def extract_valid_path_from_input(input, output):
-    """
-    A helper function to prepare dp test files using multitask test set in `input`.
-
-    The paths to the test sets will be in `output#{head}_valid.txt`, one system a line.
-    """
+def extract_valid_path_from_input(exp_path:str, head:str) -> Path:
+    input=Path(exp_path) / "input.json"
     with open(input,"r") as f:
         dd = json.load(f)
     try:
         heads = list(dd['training']['model_prob'].keys())
+        assert heads is not None, "Multitask model but head is empty."
+        assert head in heads, f"Head {head} not found in model."
     except KeyError:
         heads =[""] # single task
+        assert head == "", "Single task model but head is not empty."
 
-    for head in heads:
-        if head:
-            valid_paths = dd['training']['data_dict'][head]['validation_data']['systems']
-        else: # single task
-            valid_paths = dd['training']['validation_data']['systems']
-        with open(f'{output}#{head}_valid.txt', 'w') as f:
-            logging.warning(f"Writing to {output}#{head}_valid.txt")
-            for path in valid_paths:
-                f.write(f"{path}\n")
+    if head:
+        valid_paths = dd['training']['data_dict'][head]['validation_data']['systems']
+    else: # single task
+        valid_paths = dd['training']['validation_data']['systems']
+
+    output_file=Path(f"{exp_path}/test_valid/{head}_valid.txt")
+    logging.debug(f"Writing to {output_file}")
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, 'w') as f:
+        for path in valid_paths:
+            f.write(f"{path}\n")
+    return output_file
 
 def extract_ood_test_pth_from_yml(input_file, output_path, overwrite:Optional[bool]=False):
     """
