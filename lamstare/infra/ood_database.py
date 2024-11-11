@@ -89,12 +89,17 @@ class OODRecord(Base):
         return cls.query(run_name=run_name)
     
     @classmethod
+    def query_latest_step(cls, run_id:str) -> int:
+        return cls.query_by_run(run_id)[-1].step
+    
+    @classmethod
     def query_best_by_run(cls, run_id: str) -> List["OODRecord"]:
         records = cls.query_by_run(run_id)
+        latest_step = cls.query_latest_step(run_id)
         ood_datasets = set([record.ood_dataset for record in records])
         best_records = []
         for ood_dataset in ood_datasets:
-            records_ood = [record for record in records if record.ood_dataset == ood_dataset]
+            records_ood = [record for record in records if record.ood_dataset == ood_dataset and record.step == latest_step]
             best_record = min(records_ood, key=lambda x: (x.energy_rmse, x.force_rmse))
             best_records.append(best_record)
         return best_records
