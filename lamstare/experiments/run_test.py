@@ -1,11 +1,12 @@
+import logging
 from pathlib import Path
+from typing import Optional
+from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
 from lamstare.utils.dptest import (
     get_head_weights,
     extract_valid_path_from_input,
-    run_dptest,
 )
 from lamstare.infra import Record
-import numpy as np
 from dotenv import load_dotenv # type: ignore
 import os
 import sys
@@ -20,47 +21,33 @@ def dptest_one_cpkt_on_all_heads(exp_path:str, step: int):
         heads = list(get_head_weights(exp_path).keys())
     except KeyError:
         heads = [""] # single task
-    test_files_dir = "/tmp/"
-    extract_valid_path_from_input(exp_path+"/input.json",
-        test_files_dir) # may need a proper teardown
 
     for head in heads:
         run_name = f"{run_id}#{step}#{head}"
         record_count = len(Record.query_by_name(run_name=run_name))
         if record_count == 0:
-            checkpoint_path = Path(f"{exp_path}/model.ckpt-{step}.pt")
-            head_dptest_res = run_dptest(
-                checkpoint_path, head, Path(f"{test_files_dir}#{head}_valid.txt")
+            testfile = extract_valid_path_from_input(exp_path, head)
+            job_name = f"AUTOTEST_{run_name}"
+            command = (
+                f"#!/bin/bash \n"
+                f". /mnt/data_nas/public/.bashrc \n"
+                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')} \n"
+                f"export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new \n"
+                f"cd {Path(__file__).resolve().parent} \n"
+                f"python3 run_ind_test.py {exp_path} {head} {step} {testfile} {run_name} \n"
             )
-            print(head_dptest_res)
-            if np.isnan(head_dptest_res[f"{head}  Virial MAE"]):
-                head_dptest_res[f"{head}  Virial MAE"] = -1
-                head_dptest_res[f"{head}  Virial RMSE"] = -1
-                head_dptest_res[f"{head}  Virial MAE/Natoms"] = -1
-                head_dptest_res[f"{head}  Virial RMSE/Natoms"] = -1
-            Record(
-                run_id=run_id,
-                run_name=run_name,
-                step=step,
-                head=head,
-                energy_mae=head_dptest_res[f"{head}  Energy MAE"],
-                energy_rmse=head_dptest_res[f"{head}  Energy RMSE"],
-                energy_mae_natoms=head_dptest_res[f"{head}  Energy MAE/Natoms"],
-                energy_rmse_natoms=head_dptest_res[f"{head}  Energy RMSE/Natoms"],
-                force_mae=head_dptest_res[f"{head}  Force  MAE"],
-                force_rmse=head_dptest_res[f"{head}  Force  RMSE"],
-                virial_mae=head_dptest_res[f"{head}  Virial MAE"],
-                virial_rmse=head_dptest_res[f"{head}  Virial RMSE"],
-                virial_mae_natoms=head_dptest_res[f"{head}  Virial MAE/Natoms"],
-                virial_rmse_natoms=head_dptest_res[f"{head}  Virial RMSE/Natoms"],
-            ).insert()
+            logging.debug(f"Job command: \n{command}")
+            if query_job_numbers(job_name):
+                logging.warning(f"SKIPPED: {job_name} is already running.")
+            else:
+                submit_job_to_dlc(job_name, command)
         elif record_count == 1:
-            continue
+            logging.info(f"SKIPPED: {run_name} already exists.")
         else:
-            print(f"{run_name} has multiple records, please check!!!")
+            logging.error(f"ERROR: {run_name} has multiple records, please check.")
 
 
-def find_ckpt_to_test_cron(exp_path:str, freq:int):
+def find_ckpt_to_test_cron(exp_path:str, freq:int) -> Optional[int]:
     ckpt_pth = Path(exp_path)
     with open(ckpt_pth / "checkpoint","r") as f:
         latest_ckpt = int(f.readlines()[0].split("-")[1].split(".")[0])
@@ -69,7 +56,7 @@ def find_ckpt_to_test_cron(exp_path:str, freq:int):
     # Get basename
     run_id = exp_path.split("/")[-1]
     if len(Record.query(run_id=run_id)) > 0:
-        previous_tested_step = int(Record.query(run_id=run_id)[-1].step)
+        previous_tested_step = int(Record.query(run_id=run_id)[-1].step) # type: ignore
     else:
         previous_tested_step = 0
     print(f"Latest ckpt tested: {previous_tested_step}, Latest ckpt available: {latest_ckpt}\n")
@@ -89,6 +76,7 @@ def main(exp_path:str, freq:int=200000):
         print("No new ckpt to test.\n")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     main(sys.argv[1])
     # main("/mnt/workspace/cc/multitask/training_exps/1015_37head_multitask_1gpu_test") # multi task test data
     # main("/mnt/workspace/penganyang/experiments/1018_mptrj_l6_atton_b256_test") # single task test data
