@@ -117,7 +117,7 @@ def submit_ood_test(
                     f"cd {Path(__file__).resolve().parent} ; "
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"
                 ).replace("workspace","data_nas")
-                job_name = f"TEST-{run_id}-{ood_dataset}"
+                job_name = f"OOD-{run_name}"
                 if query_job_numbers(job_name):
                     logging.warning(f"SKIPPED: {job_name} is already running.")
                 else:

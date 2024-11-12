@@ -29,7 +29,7 @@ def submit_ind_test(exp_path: str, step: int):
         record_count = len(Record.query_by_name(run_name=run_name))
         if record_count == 0:
             testfile = extract_valid_path_from_input(exp_path, head)
-            job_name = f"AUTOTEST_{run_name}"
+            job_name = f"IND_{run_name}"
             command = (
                 f"#!/bin/bash \n"
                 f". /mnt/data_nas/public/.bashrc \n"
