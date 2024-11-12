@@ -38,13 +38,14 @@ def submit_ind_test(exp_path: str, step: int):
                 f"cd {Path(__file__).resolve().parent} \n"
                 f"python3 run_ind_test.py {exp_path} {head} {step} {testfile} {run_name} \n"
             )
-            logging.debug(f"Job command: \n{command}")
             if query_job_numbers(job_name):
                 logging.warning(f"SKIPPED: {job_name} is already running.")
             else:
+                logging.debug(f"Job command: \n{command}")
                 submit_job_to_dlc(job_name, command)
+                logging.info(f"SUBMITTED: {run_name}")
         elif record_count == 1:
-            logging.info(f"SKIPPED: {run_name} already exists.")
+            logging.info(f"SKIPPED: {run_name} already exists in DB.")
         else:
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
 

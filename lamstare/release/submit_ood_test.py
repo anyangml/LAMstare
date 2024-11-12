@@ -116,13 +116,14 @@ def submit_ood_test(
                     "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                     f"cd {Path(__file__).resolve().parent} ; "
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"
-                )
-                logging.debug(f"Job command: \n{command}")
+                ).replace("workspace","data_nas")
                 job_name = f"TEST-{run_id}-{ood_dataset}"
                 if query_job_numbers(job_name):
                     logging.warning(f"SKIPPED: {job_name} is already running.")
                 else:
+                    logging.debug(f"Job command: \n{command}")
                     submit_job_to_dlc(job_name, command)
+                    logging.info(f"SUBMITTED: {run_name}")
                 # Check submission: https://pai.console.aliyun.com/?regionId=cn-beijing&workspaceId=177142#/dlc/jobs
             else:
                 run_ood_test(
