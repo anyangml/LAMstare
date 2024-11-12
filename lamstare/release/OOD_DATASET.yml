@@ -25,7 +25,7 @@ OOD_TO_HEAD_MAP:
     filepath:
       # - /mnt/data_nas/public/public_training_data/MD22/train
       - /mnt/data_nas/public/public_training_data/MD22/valid
-    weights: 1
+    weights: 0
     test_virial: false
   COLL_train:
     head: Organic_Reactions
@@ -54,7 +54,7 @@ OOD_TO_HEAD_MAP:
     filepath:
       # - /mnt/data_nas/public/public_training_data/23-single-Kr/train
       - /mnt/data_nas/public/public_training_data/23-single-Kr/valid
-    weights: 1
+    weights: 0
     test_virial: false
   Si_ZEO22:
     head: MP_traj_v024_alldata_mixu
@@ -89,7 +89,7 @@ OOD_TO_HEAD_MAP:
     filepath:
       # - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/oxides_cloud/train
       - /mnt/data_nas/public/public_training_data/reduced-perovskite_Oxidized-marokite/oxides_cloud/valid
-    weights: 1
+    weights: 0
     test_virial: false
   Chig_AIMD:
     head: Domains_Drug
@@ -131,7 +131,7 @@ OOD_TO_HEAD_MAP:
     filepath:
       # - /mnt/data_nas/public/public_training_data/CO_CO_coupling/train
       - /mnt/data_nas/public/public_training_data/CO_CO_coupling/valid_downsample_5k
-    weights: 1
+    weights: 0
     test_virial: false
   Sub_Alex_val: # update name
     head: MP_traj_v024_alldata_mixu
