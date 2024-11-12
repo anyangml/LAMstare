@@ -142,14 +142,16 @@ def submit_ood_test(
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
 
 
-def main(exp_path: str, freq: int = 200000):
-    need_to_test = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
-    if need_to_test is not None:
-        print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
-        submit_ood_test(exp_path=exp_path, model_version="autotest", mapping_path="/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml",step=need_to_test, is_multitask=False)
+def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
+    if step is None:
+        step = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
+    if step is not None:
+        print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
+        submit_ood_test(exp_path=exp_path, model_version="autotest", mapping_path="/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml",step=step, is_multitask=False)
     else:
         print("No new ckpt to test.\n")
     # TODO: add an interface for it
+
 
 if __name__ == "__main__":
     path = sys.argv[1]

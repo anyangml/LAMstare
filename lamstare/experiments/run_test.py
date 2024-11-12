@@ -50,33 +50,34 @@ def submit_ind_test(exp_path: str, step: int):
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
 
 
-def find_ckpt_to_test_cron(exp_path: str, freq: int, record_type: type[Record]) -> Optional[int]:
+def find_ckpt_to_test_cron(
+    exp_path: str, freq: int, record_type: type[Record]
+) -> Optional[int]:
     ckpt_pth = Path(exp_path)
+    # model.ckpt-80000.pt -> 80000
     with open(ckpt_pth / "checkpoint", "r") as f:
-        latest_ckpt = int(f.readlines()[0].split("-")[1].split(".")[0])
-    # Get exp_path abs path
-    exp_path = str(ckpt_pth.resolve())
-    # Get basename
-    run_id = exp_path.split("/")[-1]
+        latest_ckpt_step = int(f.readlines()[0].split("-")[1].split(".")[0])
+    run_id = ckpt_pth.name
     if len(record_type.query(run_id=run_id)) > 0:
         previous_tested_step = int(record_type.query(run_id=run_id)[-1].step)  # type: ignore
     else:
         previous_tested_step = 0
-    print(
-        f"Latest ckpt tested: {previous_tested_step}, Latest ckpt available: {latest_ckpt}\n"
+    logging.info(
+        f"Latest ckpt tested: {previous_tested_step}, Latest ckpt available: {latest_ckpt_step}\n"
     )
-    if latest_ckpt >= previous_tested_step + freq:
+    if latest_ckpt_step >= previous_tested_step + freq:
         need_to_test = previous_tested_step + freq
     else:
         need_to_test = None
     return need_to_test
 
 
-def main(exp_path: str, freq: int = 200000):
-    need_to_test = find_ckpt_to_test_cron(exp_path, freq, Record)
-    if need_to_test is not None:
-        print(f"Running DPTEST for {exp_path} on ckpt-{need_to_test}...\n")
-        submit_ind_test(exp_path, need_to_test)
+def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
+    if step is None:
+        step = find_ckpt_to_test_cron(exp_path, freq, Record)
+    if step is not None:
+        print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
+        submit_ind_test(exp_path, step)
     else:
         print("No new ckpt to test.\n")
 
