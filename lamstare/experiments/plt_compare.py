@@ -142,7 +142,7 @@ def compare_lcurve(exps: Dict[str,str], exp_name:str, roll:int=50):
                 ax[i][2].loglog(mult_hist["step"], mult_hist[f"rmse_v_val_{head}"].rolling(roll).mean(), linestyle='-.',color=COLOR[idx])
                 ax[i][2].set_ylabel(f"rmse_v_{head}")
 
-                
+
                 if head in PREVIOUS_BASELINE:
                     ax[i][0].axhline(PREVIOUS_BASELINE[head]["rmse_e"],color="green", linestyle="-.")
                     ax[i][0].axhline(PREVIOUS_BASELINE[head]["e_std"],color="purple", linestyle="-.")
@@ -181,7 +181,7 @@ if __name__ == "__main__":
         "/mnt/data_nas/public/multitask/training_exps/1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256":"layer6-bs256-fitting32",
         "/mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256": "bs256-baseline",
         "/mnt/data_nas/public/multitask/training_exps/1031_shareft_medium_l6_atton_37head_tanh_40GPU": "bs256-sharefitting",
-        "/mnt/workspace/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh":"bs256-baseline-5M"
+        "/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh":"bs256-baseline-5M"
         # "/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test":""
     }
     compare_lcurve(exps, "Compare 37head")
