@@ -103,7 +103,6 @@ def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[
         return None
     except:
         print(f"Fail to test {temp_file_dir}")
-        # raise
 
 
 def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str) -> Dict[str,float]:
