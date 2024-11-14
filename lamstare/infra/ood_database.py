@@ -28,7 +28,7 @@ Session = sessionmaker(db)
 
 
 class OODRecord(Base):
-    __tablename__ = "ood_test_res"
+    __tablename__ = os.environ.get("OOD_TABLE_NAME","ood_test_res")
 
     id = Column(Integer, primary_key=True)
     run_id = Column(String(256), index=True)
@@ -47,7 +47,7 @@ class OODRecord(Base):
     virial_mae = Column(Float)
     virial_rmse_natoms = Column(Float)
     virial_mae_natoms = Column(Float)
-    
+
     def __repr__(self):
         return "<OODRecord id=%s step='%s' head='%s' OOD = '%s' Energy MAE/Natoms=%s>" % (
             self.run_id,
@@ -83,15 +83,15 @@ class OODRecord(Base):
     @classmethod
     def query_by_run(cls, run_id: str) -> List["OODRecord"]:
         return cls.query(run_id=run_id)
-    
+
     @classmethod
     def query_by_name(cls, run_name: str) -> List["OODRecord"]:
         return cls.query(run_name=run_name)
-    
+
     @classmethod
     def query_latest_step(cls, run_id:str) -> int:
         return cls.query_by_run(run_id)[-1].step
-    
+
     @classmethod
     def query_best_by_run(cls, run_id: str) -> List["OODRecord"]:
         records = cls.query_by_run(run_id)
@@ -103,6 +103,6 @@ class OODRecord(Base):
             best_record = min(records_ood, key=lambda x: (x.energy_rmse, x.force_rmse))
             best_records.append(best_record)
         return best_records
-    
+
 if __name__ == "__main__":
     print(OODRecord.query_best_by_run("1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256"))

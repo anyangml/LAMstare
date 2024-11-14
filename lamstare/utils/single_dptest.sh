@@ -4,15 +4,22 @@ ckpt_name=$2
 head_name=$3 # perform single task test if head name not given
 temp_file_path=$4
 run_id=$(basename $exp_path) # folder name as id
-testfile="${temp_file_path}${run_id}#${ckpt_name}#${head_name}_valid.txt"  # contains paths to test sets
+testfile=${5:-${temp_file_path}${run_id}#${ckpt_name}#${head_name}_valid.txt}  # contains paths to test sets
+if [ -f "${testfile}" ]; then
+  testfile=$(realpath ${testfile})
+fi
+
+cd $exp_path
+# change bias
+dp --pt change-bias model.ckpt-${ckpt_name}.pt -o model.ckpt-${ckpt_name}-unbias.pt -f $testfile --model-branch $head_name
+
 
 # freeze model
 echo "Freezing Model -- $run_id -- $ckpt_name -- $head_name"
 frozen_model="${run_id}#${ckpt_name}#${head_name}.pth"
 
-cd $exp_path
 # omit --head for single task
-dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}.pt ${head_name:+--head ${head_name}}
+dp --pt freeze -o ${frozen_model} -c model.ckpt-${ckpt_name}-unbias.pt ${head_name:+--head ${head_name}}
 if [ $? -ne 0 ]; then
   echo "Model Freezing Failed."
   exit 1

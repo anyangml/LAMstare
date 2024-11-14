@@ -1,23 +1,60 @@
 import subprocess
-from pathlib import Path
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv
 import os
-import sys
+import logging
+
 load_dotenv()
 
-def submit_dptest_job_to_dlc(exp_path:str):
-    job_name = exp_path.split("/")[-1]
-    docker_image = os.environ.get("DOCKER_IMAGE")
-    data_sources = os.environ.get("DATA_SOURCES")
-    workspace_id = os.environ.get("WORKSPACE_ID")
-    resource_id = os.environ.get("RESOURCE_ID")
-    venv = os.environ.get("VENV")
-    lamstare_path = os.environ.get("ROOT_DIR")
+def query_job_numbers(job_name:str):
+    # /mnt/data_nas/penganyang/dlc get  job   --workspace_id 177142 --resource_id quota1esg0zrim9o -n TEST-1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256-DNPs_2023_Kr
+    workspace_id = os.environ["WORKSPACE_ID"]
+    resource_id = os.environ["RESOURCE_ID"]
+    cmd = f"/mnt/data_nas/penganyang/dlc get job --workspace_id {workspace_id} --resource_id {resource_id}  --status Running,Queuing -n {job_name} | grep -c {workspace_id}"
+    logging.debug(f"Querying job status with command: \n{cmd}")
+    ret = subprocess.run(cmd, shell=True, check=False, stdout=subprocess.PIPE) # `grep -c` returns 0 on no match
+    ret = int(ret.stdout)
+    logging.debug(f"Job {job_name} has {ret} running or queuing jobs.")
+    return ret
+
+
+def submit_job_to_dlc(job_name:str, command:str):
+    docker_image = os.environ["DOCKER_IMAGE"]
+    data_sources = os.environ["DATA_SOURCES"]
+    workspace_id = os.environ["WORKSPACE_ID"]
+    resource_id = os.environ["RESOURCE_ID"]
     priority = 1
     worker_count = 1
     worker_gpu = 1
     worker_cpu = 12
     worker_memory = 120
+    cmd = f"/mnt/data_nas/penganyang/dlc submit pytorchjob " \
+          f"--name {job_name} " \
+          f"--worker_cpu {worker_cpu} " \
+          f"--worker_gpu {worker_gpu} " \
+          f"--worker_memory {worker_memory}Gi " \
+          f"--worker_shared_memory {worker_memory}Gi " \
+          f"--worker_image {docker_image} " \
+          f"--data_sources {data_sources} " \
+          f"--priority {priority} " \
+          f"--workers {worker_count} " \
+          f"--workspace_id {workspace_id} " \
+          f"--resource_id {resource_id} " \
+          f"--command '{command}' " \
+        #   f"--envs {','.join([f'{k}={v}' for k,v in os.environ.items() if k in ['PWD','PATH','CONDA_PREFIX','PYTHONPATH',]])} "
+    logging.debug(f"Submitting job with command: \n{cmd}")
+    # cmd += ["--interactive"]
+    try:
+        os.system(cmd)
+    except Exception as e:
+        logging.error(f"An error occurred while submitting the job: {e}")
+
+# deprecated
+def submit_dptest_job_to_dlc(exp_path:str):
+    job_name = exp_path.split("/")[-1]
+
+    venv = os.environ["VENV"]
+    lamstare_path = os.environ["ROOT_DIR"]
+
     job_name = f"AUTOTEST_{job_name}"
 
     command = f"#!/bin/bash \n" \
@@ -25,27 +62,5 @@ def submit_dptest_job_to_dlc(exp_path:str):
             f"conda activate /mnt/data_nas/public/Miniconda/envs/{venv} \n" \
             f"cd {lamstare_path} \n" \
             f"python lamstare/experiments/run_test.py {exp_path} \n" \
-            
 
-    cmd = ['/mnt/data_nas/penganyang/dlc', 'submit', 'pytorchjob']
-    cmd += ["--name", job_name]
-    cmd += ["--worker_cpu", f'{worker_cpu}']
-    cmd += ["--worker_gpu", f'{worker_gpu}']
-    cmd += ["--worker_memory", f'{worker_memory}Gi']
-    cmd += ["--worker_shared_memory", f'{worker_memory}Gi']
-    cmd += ["--worker_image", docker_image]
-    cmd += ["--command", f"{command}"]
-    cmd += ["--data_sources", f'{data_sources}']
-    cmd += ["--priority", f'{priority}']
-    cmd += ["--workers", f'{worker_count}']
-    cmd += ["--workspace_id", f'{workspace_id}']
-    cmd += ["--resource_id", f'{resource_id}']
-
-    try:
-        subprocess.run(cmd)
-    except:
-        raise RuntimeError(f"{job_name} failed")
-    
-if __name__ == "__main__":
-    for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
-        submit_dptest_job_to_dlc(exp_path) # abosulute path to the experiment folder
+    submit_job_to_dlc(job_name,command)

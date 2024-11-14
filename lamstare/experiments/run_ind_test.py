@@ -1,36 +1,23 @@
-import logging
 from pathlib import Path
-import sys
-
-from lamstare.infra.ood_database import OODRecord
 import numpy as np
 
+from lamstare.infra.trn_database import Record
 from lamstare.utils.dptest import run_dptest
 
 
-def run_ood_test(
-    exp_path: str,
-    ood_dataset,
-    head,
-    model_version: str,
-    step: int,
-    testfile: Path,
-    run_name: str,
-) -> None:
+def run_ind_test(exp_path: str, head: str, step: int, testfile: Path, run_name: str):
     run_id = exp_path.split("/")[-1]  # Get basename as id
     checkpoint_path = Path(f"{exp_path}/model.ckpt-{step}.pt")
-    head_dptest_res = run_dptest(checkpoint_path, head, testfile, ood_dataset)
+    head_dptest_res = run_dptest(checkpoint_path, head, testfile)
     print(head_dptest_res)
     if np.isnan(head_dptest_res[f"{head} Virial MAE"]):
         head_dptest_res[f"{head} Virial MAE"] = -1
         head_dptest_res[f"{head} Virial RMSE"] = -1
         head_dptest_res[f"{head} Virial MAE/Natoms"] = -1
         head_dptest_res[f"{head} Virial RMSE/Natoms"] = -1
-    OODRecord(
+    Record(
         run_id=run_id,
         run_name=run_name,
-        model_version=model_version,
-        ood_dataset=ood_dataset,
         step=step,
         head=head,
         energy_mae=head_dptest_res[f"{head} Energy MAE"],
@@ -46,15 +33,13 @@ def run_ood_test(
     ).insert()
 
 
-def main():
-    # Example usage:
-    # python3 run_ood_test.py /mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU COLL_train Organic_Reactions b4_release 1000000 testood/COLL_train.txt 1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU#1000000#COLL_train#Organic_Reactions
-    logging.basicConfig(level=logging.DEBUG)
-    exp_path, ood_dataset, head, model_version, step, testfile, run_name = sys.argv[1:]
-    run_ood_test(
-        exp_path, ood_dataset, head, model_version, int(step), Path(testfile), run_name
-    )
-
-
 if __name__ == "__main__":
-    main()
+    import sys
+
+    run_ind_test(
+        exp_path=sys.argv[1],
+        head=sys.argv[2],
+        step=int(sys.argv[3]),
+        testfile=Path(sys.argv[4]),
+        run_name=sys.argv[5],
+    )

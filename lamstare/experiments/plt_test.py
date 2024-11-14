@@ -1,4 +1,6 @@
+from typing import Union
 from lamstare.infra import Record
+from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 from lamstare.utils.dptest import get_head_weights
 from collections import defaultdict
@@ -9,24 +11,32 @@ import json
 with open("/mnt/data_nas/public/multitask/eval_scripts/baseline_stat.json","r") as f:
     PREVIOUS_BASELINE = json.load(f)
 
-
-def fetch_dptest_res(run_id:str):
+def fetch_dptest_res(
+    run_id: str, record_type: Union[Record, OODRecord] = Record
+) -> dict:
     all_records = defaultdict(dict)
 
-    for rec in Record.query_by_run(run_id):
-        all_records[rec.head][rec.step] = {
-            "energy_mae":rec.energy_mae,
-            "energy_rmse":rec.energy_rmse,
-            "energy_mae_natoms":rec.energy_mae_natoms,
-            "energy_rmse_natoms":rec.energy_rmse_natoms,
-            "force_mae":rec.force_mae,
-            "force_rmse":rec.force_rmse,
-            "virial_mae":rec.virial_mae if rec.virial_mae != -1 else np.nan,
-            "virial_rmse":rec.virial_rmse if rec.virial_rmse != -1 else np.nan,
-            "virial_mae_natoms":rec.virial_mae_natoms if rec.virial_mae_natoms != -1 else np.nan,
-            "virial_rmse_natoms":rec.virial_rmse_natoms if rec.virial_rmse_natoms != -1 else np.nan,
+    for rec in record_type.query_by_run(run_id):
+        all_records[rec.head if record_type is Record else rec.ood_dataset][
+            rec.step
+        ] = {  # use ood_dataset as head name
+            "energy_mae": rec.energy_mae,
+            "energy_rmse": rec.energy_rmse,
+            "energy_mae_natoms": rec.energy_mae_natoms,
+            "energy_rmse_natoms": rec.energy_rmse_natoms,
+            "force_mae": rec.force_mae,
+            "force_rmse": rec.force_rmse,
+            "virial_mae": rec.virial_mae if rec.virial_mae != -1 else np.nan,
+            "virial_rmse": rec.virial_rmse if rec.virial_rmse != -1 else np.nan,
+            "virial_mae_natoms": (
+                rec.virial_mae_natoms if rec.virial_mae_natoms != -1 else np.nan
+            ),
+            "virial_rmse_natoms": (
+                rec.virial_rmse_natoms if rec.virial_rmse_natoms != -1 else np.nan
+            ),
         }
     return all_records
+
 
 def parse_record_dict(all_records:dict) -> dict:
     heads = list(all_records.keys())
@@ -68,7 +78,7 @@ def main(exp_path:str):
         heads = [""] # single task
 
     n_heads = len(heads)
-    
+
     all_records = fetch_dptest_res(run_id)
     all_records = parse_record_dict(all_records)
     if n_heads == 1:

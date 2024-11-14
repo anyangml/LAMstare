@@ -28,7 +28,7 @@ Session = sessionmaker(db)
 
 
 class Record(Base):
-    __tablename__ = "multitask_train"
+    __tablename__ = os.environ.get("IND_TABLE_NAME", "multitask_train")
 
     id = Column(Integer, primary_key=True)
     run_id = Column(String(256), index=True)
@@ -45,7 +45,7 @@ class Record(Base):
     virial_mae = Column(Float)
     virial_rmse_natoms = Column(Float)
     virial_mae_natoms = Column(Float)
-    
+
     def __repr__(self):
         return "<Record id=%s step='%s' head='%s' Energy MAE/Natoms=%s>" % (
             self.run_id,
@@ -80,7 +80,7 @@ class Record(Base):
     @classmethod
     def query_by_run(cls, run_id: str) -> List["Record"]:
         return cls.query(run_id=run_id)
-    
+
     @classmethod
     def query_by_name(cls, run_name: str) -> List["Record"]:
         return cls.query(run_name=run_name)
