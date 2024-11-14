@@ -12,9 +12,6 @@ from lamstare.infra import Record
 from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
 from lamstare.utils.dptest import extract_valid_path_from_input, get_head_weights
 
-# Deprecated
-temp_file_path = os.environ.get("TEMP_FILE_DIR")
-assert temp_file_path is not None, "TEMP_FILE_DIR is not set in .env"
 
 
 def submit_ind_test(exp_path: str, step: int):
