@@ -167,8 +167,8 @@ def main(exps: list[str]):
         loc="upper left",
         frameon=False,
     )
-    filename = title + ".svg"
-    fig.savefig(filename)
+    filename = title + ".jpg"
+    fig.savefig(filename, dpi=300)
     logging.info(f"Saved {filename}")
     sendimg([filename], title)
 
