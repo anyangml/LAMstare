@@ -137,6 +137,7 @@ def plotting(
                 "o-",
                 label=dataset,
                 color=color,
+                alpha=0.8,
             )
             if dataset in OOD_DATASET_STD.index:
                 subsubplot.axhline(OOD_DATASET_STD.loc[dataset, f"{efv}_std"], color="purple", linestyle="-.")  # type: ignore
