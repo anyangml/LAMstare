@@ -37,7 +37,7 @@ def submit_ind_test(exp_path: str, step: int):
                 f"export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new \n"
                 f"cd {Path(__file__).resolve().parent} \n"
                 f"python3 run_ind_test.py {exp_path} {head} {step} {testfile} {run_name} \n"
-            )
+            ).replace("workspace","data_nas")
             if query_job_numbers(job_name):
                 logging.warning(f"SKIPPED: {job_name} is already running.")
             else:
