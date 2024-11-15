@@ -35,18 +35,17 @@ with open(
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"])
-    .T.reset_index(names="Dataset")
-    .set_index("Dataset")
+    .T.rename_axis("Dataset")
     .infer_objects()
 )
 print(OOD_DATASET)
 
-OOD_DATASET_STD = pandas.read_csv(
-    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
-)
 # Dataset, energy_std, force_std, virial_std
-OOD_DATASET_STD.set_index("Dataset", inplace=True)
-OOD_DATASET_STD = OOD_DATASET_STD.infer_objects()
+OOD_DATASET_STD = (
+    pandas.read_csv("/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv")
+    .infer_objects()
+    .set_index("Dataset", inplace=True)
+)
 
 
 def parse_record_dict_to_df(data: dict) -> DataFrame:
