@@ -1,3 +1,4 @@
+from functools import lru_cache
 import logging
 from typing import Union
 
@@ -73,7 +74,7 @@ def parse_record_dict_to_df(data: dict) -> DataFrame:
     df.sort_index(level=0, inplace=True)
     return df
 
-
+@lru_cache
 def get_weighted_result(exp_path: str) -> DataFrame:
     run_id = exp_path.split("/")[-1]  # Get basename as id
     all_records = fetch_dptest_res(run_id, OODRecord)
@@ -146,18 +147,29 @@ def plotting(
 
 
 def main(exps: list[str]):
-    one_record = get_weighted_result(exps[0])
-    datasets:list[str] = one_record.index.get_level_values("Dataset").unique().tolist()
-    # FIXME: the dataset info is inferred from the first experiment
+    # Get all datasets
+    datasets: list[str] = sorted(
+        set(
+            dataset
+            for exp in exps
+            for dataset in get_weighted_result(exp)
+            .index.get_level_values("Dataset")
+            .unique()
+            .tolist()
+        )
+    )
+    datasets.remove("Weighted") # Assuming it exists
+    datasets.append("Weighted") # Move to the end
     print(datasets)
+
     fig, ax = plt.subplots(
         len(datasets), 3, figsize=(12, 3 * len(datasets)), sharex=True
     )
     ax: list[list[Axes]]
     legend_handles: list[Line2D] = []
-    # get axis by dataset name
+    # get axis by dataset name to prevent plotting on wrong axis
     dataset_to_subplot = dict(zip(datasets, ax))
-    # add energy/force/virial to the begin of plots
+    # add energy/force/virial to the beginning of plots
     for axis, efv in zip(ax[0], ["energy", "force", "virial"]):
         axis.set_title(efv)
 
@@ -168,7 +180,7 @@ def main(exps: list[str]):
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
     title = "Compare OOD"
-    # fig.suptitle(title)
+    # fig.suptitle(title) # Poor placement
     fig.legend(
         handles=legend_handles,
         labels=[exp_path.split("/")[-1] for exp_path in exps],
@@ -177,7 +189,7 @@ def main(exps: list[str]):
     )
     filename = title + ".jpg"
     fig.savefig(filename, dpi=300)
-    logging.info(f"Saved {filename}")
+    print(f"Saved to {filename}")
     sendimg([filename], title)
 
 
