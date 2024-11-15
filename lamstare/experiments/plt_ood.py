@@ -29,7 +29,9 @@ COLOR = [
     "orchid",
 ]
 
-with open("/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml", "r") as f:
+with open(
+    "/mnt/workspace/public/multitask/LAMstare/lamstare/release/new_OOD_DATASET.yml", "r"
+) as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"])
@@ -37,8 +39,7 @@ OOD_DATASET = (
     .set_index("Dataset")
     .infer_objects()
 )
-# print(OOD_DATASET)
-# Dict[head, {filepath, weights, test_virial}]
+print(OOD_DATASET)
 
 OOD_DATASET_STD = pandas.read_csv(
     "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
@@ -82,32 +83,27 @@ def get_weighted_result(exp_path: str) -> DataFrame:
     all_records_df_raw = all_records_df.copy()
     # print(all_records_df)
 
-    weights = OOD_DATASET["weights"]
-    # print(weights)
-
     # Remove records with zero weights
-    all_records_df.mask(weights == 0, inplace=True)
-    # calculate weighted mean
-    weighted = all_records_df.mul(
-        weights,
-        axis="index",
-    )
-    weighted_avg = weighted.groupby("Training Steps").mean()
-    # print(weighted_avg)
+    all_records_df.mask(all_records_df.isna(), inplace=True) # FIXME: need teests
 
+    weighted_avg = all_records_df.groupby("Training Steps").mean() # provide a baseline with same shape
     # mask.inplace and update() won't work; need to assign to a new variable
-    virials = all_records_df.loc[:, [v for v in all_records_df.keys() if "virial" in v]]
-    virials.mask(~OOD_DATASET["test_virial"], inplace=True)
-    weighted_virial = virials.mul(weights, axis="index")
-    weighted_virial_avg = weighted_virial.groupby("Training Steps").mean()
-    # print(weighted_virial_avg)
-    weighted_avg.update(weighted_virial_avg)
+    for efv in ["energy", "force", "virial"]:
+        data = all_records_df.loc[:, [key for key in all_records_df.keys() if efv in key]]
+        weights=OOD_DATASET[efv+"_weight"]
+        data.mask(weights==0, inplace=True)
+        weighted_avg_efv = (
+            data.apply(np.log)
+            .mul(weights, axis="index")
+            .groupby("Training Steps")
+            .mean()
+            .apply(np.exp)
+        )
+        weighted_avg.update(weighted_avg_efv)
 
     weighted_avg["Dataset"] = "Weighted"
-    # print(weighted_avg)
     weighted_avg.reset_index(inplace=True)
     weighted_avg.set_index(["Dataset", "Training Steps"], inplace=True)
-    # print(weighted_avg)
     all_records_df = pandas.concat(
         [all_records_df_raw, weighted_avg]
     )  # Preserve masked values
@@ -195,9 +191,11 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
+        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
+        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
+        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
         "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
+        "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
+        "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU"
     ]
     main(exps)
