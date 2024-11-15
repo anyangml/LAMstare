@@ -115,14 +115,14 @@ def get_weighted_result(exp_path: str) -> DataFrame:
 
 
 def plotting(
-    ax: list[list[Axes]],
+    dataset_to_subplot: dict[str, list[Axes]],
     all_records_df: DataFrame,
     color: str,
     legend_handles: list[Line2D],
 ):
-    for subplot, (dataset, records) in zip(
-        ax, all_records_df.groupby("Dataset"), strict=True
-    ):
+    for dataset, records in all_records_df.groupby("Dataset"):
+        assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
+        subplot=dataset_to_subplot[dataset] # type: ignore
         # print(dataset)
         records = records.droplevel("Dataset")
         # print(records)
@@ -147,16 +147,23 @@ def plotting(
 
 def main(exps: list[str]):
     one_record = get_weighted_result(exps[0])
-    n_datasets = one_record.index.get_level_values("Dataset").nunique()
-    fig, ax = plt.subplots(n_datasets, 3, figsize=(12, 3 * n_datasets), sharex=True)
+    datasets:list[str] = one_record.index.get_level_values("Dataset").unique().tolist()
+    # FIXME: the dataset info is inferred from the first experiment
+    print(datasets)
+    fig, ax = plt.subplots(
+        len(datasets), 3, figsize=(12, 3 * len(datasets)), sharex=True
+    )
     ax: list[list[Axes]]
     legend_handles: list[Line2D] = []
+    # get axis by dataset name
+    dataset_to_subplot = dict(zip(datasets, ax))
     # add energy/force/virial to the begin of plots
     for axis, efv in zip(ax[0], ["energy", "force", "virial"]):
         axis.set_title(efv)
+
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
-        plotting(ax, all_records_df, color, legend_handles)
+        plotting(dataset_to_subplot, all_records_df, color, legend_handles)
 
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
