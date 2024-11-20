@@ -1,78 +1,37 @@
 from functools import lru_cache
-import logging
-from typing import Union
 
-from matplotlib.axes import Axes
-from matplotlib.lines import Line2D
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas
 import yaml
-from lamstare.experiments.plt_test import fetch_dptest_res
-from lamstare.infra import Record
-from lamstare.infra.ood_database import OODRecord
-from lamstare.utils.plot import sendimg
-from collections import defaultdict
-import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
+from matplotlib.lines import Line2D
 from pandas import DataFrame
 
-COLOR = [
-    "red",
-    "yellowgreen",
-    "dodgerblue",
-    "mediumpurple",
-    "orange",
-    "lightsalmon",
-    "hotpink",
-    "tan",
-    "cyan",
-    "navy",
-    "orchid",
-]
+from lamstare.experiments.plt_test import COLOR, fetch_dptest_res, parse_record_dict_to_df
+from lamstare.infra.ood_database import OODRecord
+from lamstare.utils.plot import sendimg
+
 
 with open(
     "/mnt/workspace/public/multitask/LAMstare/lamstare/release/new_OOD_DATASET.yml", "r"
 ) as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
-    DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"])
-    .T.rename_axis("Dataset")
-    .infer_objects()
+    DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
 )
+# normalize weights
+for index in OOD_DATASET.keys():
+    if "weight" in index:
+        efv_weight = OOD_DATASET[index]
+        efv_weight /= efv_weight.mean()
 print(OOD_DATASET)
 
-# Dataset, energy_std, force_std, virial_std
-OOD_DATASET_STD = (
-    pandas.read_csv("/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv")
-    .infer_objects()
-    .set_index("Dataset", inplace=True)
-)
-
-
-def parse_record_dict_to_df(data: dict) -> DataFrame:
-    # Convert dictionary to a list of tuples
-    data_tuples = [
-        (dataset, training_steps, metrics)
-        for dataset, training_steps_dict in data.items()
-        for training_steps, metrics in training_steps_dict.items()
-    ]
-
-    # Extract the first metrics dictionary to get the keys
-    columns = ["Dataset", "Training Steps"] + list(data_tuples[0][2].keys())
-
-    # Create DataFrame
-    df = DataFrame(
-        [
-            (dataset, training_steps, *metrics.values())
-            for dataset, training_steps, metrics in data_tuples
-        ],
-        columns=columns,
-    )
-
-    # Set multi-index
-    df.set_index(["Dataset", "Training Steps"], inplace=True)
-    # sort by Dataset
-    df.sort_index(level=0, inplace=True)
-    return df
+OOD_DATASET_STD = pandas.read_csv(
+    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
+).infer_objects()
+OOD_DATASET_STD.set_index("Dataset", inplace=True)
+print(OOD_DATASET_STD)
 
 @lru_cache
 def get_weighted_result(exp_path: str) -> DataFrame:
@@ -83,14 +42,18 @@ def get_weighted_result(exp_path: str) -> DataFrame:
     # print(all_records_df)
 
     # Remove records with zero weights
-    all_records_df.mask(all_records_df.isna(), inplace=True) # FIXME: need teests
+    all_records_df.mask(all_records_df.isna(), inplace=True)  # FIXME: need teests
 
-    weighted_avg = all_records_df.groupby("Training Steps").mean() # provide a baseline with same shape
+    weighted_avg = all_records_df.groupby(
+        "Training Steps"
+    ).mean()  # provide a baseline with same shape
     # mask.inplace and update() won't work; need to assign to a new variable
     for efv in ["energy", "force", "virial"]:
-        data = all_records_df.loc[:, [key for key in all_records_df.keys() if efv in key]]
-        weights=OOD_DATASET[efv+"_weight"]
-        data.mask(weights==0, inplace=True)
+        data = all_records_df.loc[
+            :, [key for key in all_records_df.keys() if efv in key]
+        ]
+        weights = OOD_DATASET[efv + "_weight"]
+        # data.mask(weights == 0, inplace=True)
         weighted_avg_efv = (
             data.apply(np.log)
             .mul(weights, axis="index")
@@ -118,7 +81,7 @@ def plotting(
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
-        subplot=dataset_to_subplot[dataset] # type: ignore
+        subplot = dataset_to_subplot[dataset]  # type: ignore
         # print(dataset)
         records = records.droplevel("Dataset")
         # print(records)
@@ -126,6 +89,13 @@ def plotting(
         for efv, suffix, subsubplot in zip(
             ["energy", "force", "virial"], ["_natoms", "", "_natoms"], subplot
         ):
+            if dataset in OOD_DATASET_STD.index:
+                std: numpy.float = OOD_DATASET_STD.loc[dataset, f"{efv}_std"]  # type: ignore
+                if efv == "virial" and dataset != "Weighted" and np.isnan(std):
+                    break # Careful! virial should be the last element in for loop
+                subsubplot.axhline(std, color="purple", linestyle="-.")
+                # FIXME: this will draw duplicated lines
+
             metric_name = efv + "_rmse" + suffix
             line = subsubplot.loglog(
                 records.index,  # step
@@ -135,26 +105,13 @@ def plotting(
                 color=color,
                 alpha=0.8,
             )
-            if dataset in OOD_DATASET_STD.index:
-                subsubplot.axhline(OOD_DATASET_STD.loc[dataset, f"{efv}_std"], color="purple", linestyle="-.")  # type: ignore
-            # FIXME: this will draw duplicated lines
     legend_handles.extend(line)  # type: ignore
 
 
 def main(exps: list[str]):
-    # Get all datasets
-    datasets: list[str] = sorted(
-        set(
-            dataset
-            for exp in exps
-            for dataset in get_weighted_result(exp)
-            .index.get_level_values("Dataset")
-            .unique()
-            .tolist()
-        )
-    )
-    datasets.remove("Weighted") # Assuming it exists
-    datasets.append("Weighted") # Move to the end
+    # Get dataset list from yaml file to preserve the order
+    datasets: list[str] = OOD_DATASET.index.tolist()
+    datasets.append("Weighted")
     print(datasets)
 
     fig, ax = plt.subplots(
@@ -193,8 +150,10 @@ if __name__ == "__main__":
         # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
+        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
         "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU"
+        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
+        "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
+        "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
     ]
     main(exps)
