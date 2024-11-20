@@ -94,7 +94,7 @@ def plotting(
                 if efv == "virial" and dataset != "Weighted" and np.isnan(std):
                     break # Careful! virial should be the last element in for loop
                 subsubplot.axhline(std, color="purple", linestyle="-.")
-                # FIXME: this will draw duplicated lines
+                # note: this will draw duplicated lines
 
             metric_name = efv + "_rmse" + suffix
             line = subsubplot.loglog(
