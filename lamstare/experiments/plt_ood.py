@@ -42,7 +42,7 @@ def get_weighted_result(exp_path: str) -> DataFrame:
     # print(all_records_df)
 
     # Remove records with zero weights
-    all_records_df.mask(all_records_df.isna(), inplace=True)  # FIXME: need teests
+    all_records_df.mask(all_records_df.isna(), inplace=True)
 
     weighted_avg = all_records_df.groupby(
         "Training Steps"
