@@ -156,7 +156,7 @@ def main(exp_paths:List[str], weights_e:dict, weights_f:dict, weights_v:dict):
 
 
 def push_weights():
-    with open(os.path.dirname(__file__) + "../release/OOD_DATASET.yml", "r") as f:
+    with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
         yaml_dd =  yaml.safe_load(f)
 
     WEIGHTS_E = {k:v['weights_e'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
@@ -193,7 +193,7 @@ def delete_column():
 
 def add_column():
 
-    with open(os.path.dirname(__file__) + "../release/OOD_DATASET.yml","r") as f:
+    with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml","r") as f:
         yaml_dd =  yaml.safe_load(f)
 
     url  = (

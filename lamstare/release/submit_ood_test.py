@@ -141,7 +141,7 @@ def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
         submit_ood_test(
             exp_path=exp_path,
             model_version="autotest",
-            mapping_path=os.path.dirname(__file__) + "../release/OOD_DATASET.yml",
+            mapping_path=os.path.dirname(__file__) + "/../release/OOD_DATASET.yml",
             step=step,
             is_multitask=False,
         )
