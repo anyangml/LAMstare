@@ -145,7 +145,13 @@ def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
         step = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
     if step is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
-        submit_ood_test(exp_path=exp_path, model_version="autotest", mapping_path="/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml",step=step, is_multitask=False)
+        submit_ood_test(
+            exp_path=exp_path,
+            model_version="autotest",
+            mapping_path=os.path.dirname(__file__) + "../release/OOD_DATASET.yml",
+            step=step,
+            is_multitask=False,
+        )
     else:
         print("No new ckpt to test.\n")
 

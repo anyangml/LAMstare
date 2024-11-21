@@ -1,4 +1,5 @@
 from functools import lru_cache
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,9 +14,7 @@ from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 
 
-with open(
-    "/mnt/workspace/public/multitask/LAMstare/lamstare/release/new_OOD_DATASET.yml", "r"
-) as f:
+with open(os.path.dirname(__file__) + "../release/OOD_DATASET.yml", "r") as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
