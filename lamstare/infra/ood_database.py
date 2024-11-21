@@ -28,7 +28,7 @@ Session = sessionmaker(db)
 
 
 class OODRecord(Base):
-    __tablename__ = os.environ.get("OOD_TABLE_NAME","ood_test_res")
+    __tablename__ = "ood_demo"
 
     id = Column(Integer, primary_key=True)
     run_id = Column(String(256), index=True)

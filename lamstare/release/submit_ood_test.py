@@ -33,7 +33,7 @@ def get_ood_to_head_map(
         is_multitask    : bool
             Whether the model is a multitask model or not.
     """
-
+    logging.info(f"Loading OOD dataset mapping from {mapping_path}")
     with open(mapping_path, "r") as f:
         yaml_dd = yaml.safe_load(f)
     is_multitask = yaml_dd.get("IS_MULTI_TASK", False)
@@ -80,14 +80,12 @@ def submit_ood_test(
     python3 submit_ood_test.py /mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l8_atton_37head_tanh_40GPU_bs_auto128
     ```
     """
-
     # generate test file from input.json
     mapping, is_multitask = get_ood_to_head_map(
         mapping_path=mapping_path, output_path=output_path, overwrite=overwrite
     )  # also generates the dp test input files
     if step is None:
         step = get_latest_ckpt(exp_path)
-    is_multitask = False
     if is_multitask:
         avaliable_heads_in_model = set(get_head_weights(exp_path).keys())
         heads_needed = set(mapping.values())
@@ -140,10 +138,15 @@ def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
         step = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
     if step is not None:
         print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
-        submit_ood_test(exp_path=exp_path, model_version="autotest", mapping_path="/mnt/data_nas/cc/LAMstare_new/lamstare/release/OOD_DATASET.yml",step=step, is_multitask=False)
+        submit_ood_test(
+            exp_path=exp_path,
+            model_version="autotest",
+            mapping_path=os.path.dirname(__file__) + "../release/OOD_DATASET.yml",
+            step=step,
+            is_multitask=False,
+        )
     else:
         print("No new ckpt to test.\n")
-    # TODO: add an interface for it
 
 
 if __name__ == "__main__":
