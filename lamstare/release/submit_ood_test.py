@@ -95,7 +95,7 @@ def submit_ood_test(
 
     USE_DLC = True
     for ood_dataset, head in reversed(mapping.items()):
-        testfile = Path(output_path) / f"{ood_dataset}.txt"
+        testfile = Path(output_path).resolve() / f"{ood_dataset}.txt"
         run_id = exp_path.split("/")[-1]  # Get basename as id
         run_name = f"{run_id}#{step}#{ood_dataset}#{head}"  # the index to identify each run in DB
         record_count = len(OODRecord.query_by_name(run_name=run_name))
