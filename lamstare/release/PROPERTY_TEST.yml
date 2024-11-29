@@ -1,0 +1,12 @@
+TASK_TO_HEAD_MAP:
+  TASK_1:
+    train_path:
+    test_path:
+    train_steps:
+    property_dim:
+  TASK_2:
+    train_path:
+    test_path:
+    train_steps:
+    property_dim:
+    
