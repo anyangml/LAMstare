@@ -1,6 +1,9 @@
 import json
 import yaml
 import os
+import shutil
+import logging
+from lamstare.utils.dptest import extract_info_from_dptest_txt
 
 def get_property_json(params: dict):
     finetune_config = {
@@ -58,28 +61,83 @@ def get_property_json(params: dict):
     }
     return finetune_config
 
-def prepare_property_input(pretrain_exp_path:str,property_yaml:str,finetune_path:str="/tmp"):
+def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step: int, property_yaml:str,output_path:str="/tmp"):
+    """
+    This function prepares all the necessary files to finetune a pre-trained model on a property task.
+    It should do the following:
+        1. prepare property finetune input.json given a task name
+        2. copy pretrain model model.ckpt-xxx.pt to finetune folder
+    """
+    run_id = pretrain_exp_path.split("/")[-1]
+    finetune_path = os.path.join(output_path, f"{run_id}_{task_name}")
+    os.makedirs(finetune_path,exist_ok=True)
+
+    # I. prepare property finetune input.json
     with open(property_yaml, 'r') as f:
         tasks = yaml.load(f, Loader=yaml.FullLoader)["TASK_TO_HEAD_MAP"]
     
     with open(os.path.join(pretrain_exp_path,"input.json"), "r") as f:
         pretrain_config = json.load(f)
     
-    for task_name, paras in tasks.items():
-        if "loss_dict" in pretrain_config: # multitask input
-            paras.update({
-                "descriptor": pretrain_config["model"]["shared_dict"]["dpa2_descriptor"],
-                "type_map": pretrain_config["model"]["shared_dict"]["type_map_all"]
-            })
-        else: #single task input
-            raise NotImplementedError
+    params  = tasks[task_name]
+    if "loss_dict" in pretrain_config: # multitask input
+        params.update({
+            "descriptor": pretrain_config["model"]["shared_dict"]["dpa2_descriptor"],
+            "type_map": pretrain_config["model"]["shared_dict"]["type_map_all"]
+        })
+    else: #single task input
+        raise NotImplementedError
 
-        finetune_config = get_property_json(paras)
-        os.makedirs(os.path.join(finetune_path, task_name),exist_ok=True)
-        with open(os.path.join(f"{finetune_path}/{task_name}","input.json"), "w") as f:
-            json.dump(finetune_config, f, indent=4)
+    finetune_config = get_property_json(params)
+    
+    with open(os.path.join(finetune_path,"input.json"), "w") as f:
+        json.dump(finetune_config, f, indent=4)
 
-        break
+    # II. copy model.ckpt-xxx.pt to finetune folder
+    shutil.copy(f"{pretrain_exp_path}/model.ckpt-{step}.pt", finetune_path)
 
-def run_property_finetune
-prepare_property_inputs("/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24", os.path.dirname(__file__) + "/../release/PROPERTY_TEST.yml")
+    # III prepare test_valid folder
+    with open(os.path.join(finetune_path,f"{task_name}_valid.txt"), "w") as f:
+        f.write(f"{params.get("test_path")}\n")
+    return finetune_path
+
+
+def run_property_train_test(finetune_path: str, task_name: str, step: int) -> dict:
+    """This should be the shell interface that runs finetuning and testing, results extraction"""
+    
+    # I. change to finetune folder
+    model = f"{task_name}_model.ckpt-{step}.pt"
+    command = (
+        f"cd {finetune_path};"
+    )
+    logging.warning(command)
+    ret = os.system(command)
+    if ret != 0:
+        raise RuntimeError(f"Failed to change directory to {finetune_path}")
+    
+    # II. Finetune model
+    command = (
+        f"dp --pt train input.json --finetune model.ckpt-{step}.pt"
+    )
+    ret = os.system(command)
+    if ret != 0:
+        raise RuntimeError(f"Failed to finetune for {model}")
+
+    # III. Freeze model
+    command = f"dp --pt freeze -o finetuned_{task_name}.pth"
+    logging.warning(command)
+    ret = os.system(command)
+    if ret != 0:
+        raise RuntimeError(f"Failed to freeze model {model}")
+    
+    # IV. Test model
+    test_result = f"{finetune_path.split('/')[-1]}.txt"
+    command = f"dp --pt test -m {f"finetuned_{task_name}.pth"} -f {f"{task_name}_valid.txt"} -l {test_result}"
+    logging.warning(command)
+    ret = os.system(command)
+    if ret != 0:
+        raise RuntimeError(f"Failed to test model {test_result}")
+    
+    # V. Extract results
+    result = extract_info_from_dptest_txt(task_name, test_result,txt_type="property")
+    
