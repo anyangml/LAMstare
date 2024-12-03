@@ -32,7 +32,7 @@ def submit_property_test(
             command = (
                 ". /mnt/data_nas/public/.bashrc; "
                 f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
-                "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
+                # "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                 f"cd {Path(__file__).resolve().parent} ; "
                 f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name}"
             ).replace("workspace","data_nas")
@@ -49,29 +49,22 @@ def submit_property_test(
             logging.info(f"SKIPPED: {run_name} already exists.")
         else:
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
+        break
         
 
 
 
 
 
-# def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
-#     if step is None:
-#         step = find_ckpt_to_test_cron(exp_path, freq, OODRecord)
-#     if step is not None:
-#         print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
-#         submit_ood_test(
-#             exp_path=exp_path,
-#             model_version="autotest",
-#             property_yml=os.path.dirname(__file__) + "/../release/OOD_DATASET.yml",
-#             step=step,
-#             is_multitask=False,
-#         )
-#     else:
-#         print("No new ckpt to test.\n")
+def main(exp_path: str, step: int):
+    
+    print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
+    submit_property_test(
+        exp_path=exp_path,
+        model_version="autotest",
+        step=step,
+        property_yml=os.path.dirname(__file__) + "/PROPERTY_TEST.yml",
+    )
 
-
-# if __name__ == "__main__":
-#     path = sys.argv[1]
-#     logging.basicConfig(level=logging.DEBUG)
-#     submit_ood_test(path, "b4_release", is_multitask=False)
+if __name__ == "__main__":
+    main("/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24", 1000000)

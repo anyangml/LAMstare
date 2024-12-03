@@ -98,7 +98,7 @@ def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step:
 
     # III prepare test_valid folder
     with open(os.path.join(finetune_path,f"{task_name}_valid.txt"), "w") as f:
-        f.write(f"{params.get("test_path")}\n")
+        f.write(f"{params.get('test_path')}\n")
     return finetune_path
 
 
@@ -132,7 +132,7 @@ def run_property_train_test(finetune_path: str, task_name: str, step: int) -> di
     
     # IV. Test model
     test_result = f"{finetune_path.split('/')[-1]}.txt"
-    command = f"dp --pt test -m {f"finetuned_{task_name}.pth"} -f {f"{task_name}_valid.txt"} -l {test_result}"
+    command = f"dp --pt test -m {f'finetuned_{task_name}.pth'} -f {f'{task_name}_valid.txt'} -l {test_result}"
     logging.warning(command)
     ret = os.system(command)
     if ret != 0:
