@@ -4,6 +4,7 @@ import os
 import shutil
 import logging
 from lamstare.utils.dptest import extract_info_from_dptest_txt
+from pathlib import Path
 
 def get_property_json(params: dict):
     finetune_config = {
@@ -54,14 +55,14 @@ def get_property_json(params: dict):
             "max_ckpt_keep": 10,
             "seed": 10,
             "disp_file": "lcurve.out",
-            "disp_freq": params.get("train_steps")/100,
-            "save_freq": params.get("train_steps")//4,
+            "disp_freq": int(params.get("train_steps")//100),
+            "save_freq": int(params.get("train_steps")//4),
             "_comment": "that's all",
         }
     }
     return finetune_config
 
-def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step: int, property_yaml:str,output_path:str="/tmp"):
+def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step: int, property_yaml:str,output_path:str="finetune"):
     """
     This function prepares all the necessary files to finetune a pre-trained model on a property task.
     It should do the following:
@@ -70,7 +71,11 @@ def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step:
     """
     run_id = pretrain_exp_path.split("/")[-1]
     finetune_path = os.path.join(output_path, f"{run_id}_{task_name}")
-    os.makedirs(finetune_path,exist_ok=True)
+    try:
+        os.makedirs(finetune_path,exist_ok=False)
+    except FileExistsError:
+        logging.warning(f"Finetune path {finetune_path} already exists. SKIP.")
+        return finetune_path
 
     # I. prepare property finetune input.json
     with open(property_yaml, 'r') as f:
@@ -94,31 +99,30 @@ def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step:
         json.dump(finetune_config, f, indent=4)
 
     # II. copy model.ckpt-xxx.pt to finetune folder
-    shutil.copy(f"{pretrain_exp_path}/model.ckpt-{step}.pt", finetune_path)
+    shutil.copy(f"{pretrain_exp_path}/model.ckpt-{step}.pt", f"{finetune_path}/pretrain-{step}.pt")
 
     # III prepare test_valid folder
     with open(os.path.join(finetune_path,f"{task_name}_valid.txt"), "w") as f:
-        f.write(f"{params.get('test_path')}\n")
+        for sys in Path(params.get("test_path")).rglob("type_map.raw"):
+            f.write(f"{sys.parent}\n")
     return finetune_path
 
 
 def run_property_train_test(finetune_path: str, task_name: str, step: int) -> dict:
     """This should be the shell interface that runs finetuning and testing, results extraction"""
-    
     # I. change to finetune folder
     model = f"{task_name}_model.ckpt-{step}.pt"
-    command = (
-        f"cd {finetune_path};"
-    )
-    logging.warning(command)
-    ret = os.system(command)
-    if ret != 0:
-        raise RuntimeError(f"Failed to change directory to {finetune_path}")
-    
+    try:
+        os.chdir(finetune_path)
+    except Exception as e:
+        print(f"Error changing directory: {e}")
+    os.system("pwd")
+
     # II. Finetune model
     command = (
-        f"dp --pt train input.json --finetune model.ckpt-{step}.pt"
+        f"dp --pt train input.json --finetune pretrain-{step}.pt --skip-neighbor-stat"
     )
+    logging.warning(command)
     ret = os.system(command)
     if ret != 0:
         raise RuntimeError(f"Failed to finetune for {model}")
@@ -140,4 +144,5 @@ def run_property_train_test(finetune_path: str, task_name: str, step: int) -> di
     
     # V. Extract results
     result = extract_info_from_dptest_txt(task_name, test_result,txt_type="property")
+    return result
     

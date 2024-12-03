@@ -10,13 +10,12 @@ from lamstare.infra.property_database import PropertyRecord
 from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
 from lamstare.utils.property import prepare_property_finetune_folder
 
-
 def submit_property_test(
     exp_path: str,
     model_version: str,
     step: int,
     property_yml: str = "PROPERTY_TEST.yml",
-    output_path: str = "/tmp",
+    output_path: str = "finetune",
 ) -> None:
 
     with open(property_yml, 'r') as f:
@@ -31,10 +30,10 @@ def submit_property_test(
             finetune_path = prepare_property_finetune_folder(exp_path, task_name, step, property_yml, output_path)
             command = (
                 ". /mnt/data_nas/public/.bashrc; "
-                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
+                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
                 # "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
-                f"cd {Path(__file__).resolve().parent} ; "
-                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name}"
+                f"cd {Path(__file__).resolve().parent};"
+                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name} {property_yml}"
             ).replace("workspace","data_nas")
             
             job_name = f"PROPERTY-{run_name}"
