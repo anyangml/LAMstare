@@ -8,7 +8,7 @@ import yaml
 
 from lamstare.experiments.run_test import find_ckpt_to_test_cron
 from lamstare.infra.ood_database import OODRecord
-from lamstare.release.run_ood_test import run_ood_test
+from lamstare.release.ood_test.run_ood_test import run_ood_test
 from lamstare.utils.dlc_submit import query_job_numbers, submit_job_to_dlc
 from lamstare.utils.dptest import extract_ood_test_pth_from_yml, get_head_weights
 
@@ -141,7 +141,7 @@ def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
         submit_ood_test(
             exp_path=exp_path,
             model_version="autotest",
-            mapping_path=os.path.dirname(__file__) + "/../release/OOD_DATASET.yml",
+            mapping_path=os.path.dirname(__file__) + "/OOD_DATASET.yml",
             step=step,
             is_multitask=False,
         )
