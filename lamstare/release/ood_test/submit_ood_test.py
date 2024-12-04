@@ -103,7 +103,7 @@ def submit_ood_test(
             if USE_DLC:
                 command = (
                     ". /mnt/data_nas/public/.bashrc; "
-                    f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
+                    f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlamdb')};"
                     "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                     f"cd {Path(__file__).resolve().parent} ; "
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"

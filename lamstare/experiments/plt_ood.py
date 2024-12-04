@@ -146,18 +146,8 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline",
+        
+        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
+        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
     ]
     main(exps)

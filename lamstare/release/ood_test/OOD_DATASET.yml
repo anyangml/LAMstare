@@ -53,7 +53,7 @@ OOD_TO_HEAD_MAP:
     head: MP_traj_v024_alldata_mixu
     filepath:
       - /mnt/data_nas/public/public_training_data/Si-ZEO22/valid
-    energy_weight: 1
+    energy_weight: null
     force_weight: 1
     virial_weight: null
   NequIP_NC_2022:
@@ -68,7 +68,7 @@ OOD_TO_HEAD_MAP:
     filepath:
       - /mnt/data_nas/public/OOD_test_data/Ca_batteries_CM2021
     energy_weight: 1
-    force_weight: 1
+    force_weight: null
     virial_weight: null
   Chig_AIMD:
     head: Domains_Drug

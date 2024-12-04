@@ -77,6 +77,6 @@ def main(exp_path:str, roll:int=50):
     sendimg(["lcurve.jpg"], run_id)
 
 if __name__ == "__main__":
-    for exp_path in ["/mnt/data_nas/penganyang/experiments/1029_omat_batch128_medium_test"]:
+    for exp_path in ["/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"]:
         main(exp_path)
     # main("/mnt/data_nas/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh")
