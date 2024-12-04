@@ -30,7 +30,7 @@ def submit_ind_test(exp_path: str, step: int):
             command = (
                 f"#!/bin/bash \n"
                 f". /mnt/data_nas/public/.bashrc \n"
-                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')} \n"
+                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')} \n"
                 f"export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new \n"
                 f"cd {Path(__file__).resolve().parent} \n"
                 f"python3 run_ind_test.py {exp_path} {head} {step} {testfile} {run_name} \n"

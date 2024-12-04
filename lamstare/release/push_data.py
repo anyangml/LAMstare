@@ -14,14 +14,8 @@ if __name__ == "__main__":
     exp_paths = [
         # "/mnt/workspace/penganyang/experiments/0911_gelu_2M_RMSE_lr1e-3_1e-5_pref0220_10020_l6_attoff_batch128_4GPU_v024mixu"
         # "/OOD-dataset-std",
-        # "/mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l8_atton_37head_tanh_40GPU_bs_auto128",
-        # "/mnt/data_nas/public/multitask/training_exps/1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256",
-        # "/mnt/data_nas/public/multitask/training_exps/1103_linear_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256",
-        # "/mnt/data_nas/public/multitask/training_exps/1031_shareft_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/workspace/public/multitask/training_exps/1018_b4_medium_l6_atton_37head_linear_fitting_tanh",
+        
         # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_10001_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_240by6_medium_l6_atton_37head_tanh_40GPU"
         # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
@@ -31,9 +25,18 @@ if __name__ == "__main__":
         # "/1114_BASELINE_DP"
         # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
+        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
-        "/mnt/workspace/public/multitask/training_exps/0920_dpa2_large_28head_MPTraj_gpu8_10M",
-        "/mnt/workspace/public/multitask/training_exps/0920_dpa2_medium_28head_MPTraj_gpu8_10M",
+        # "/mnt/workspace/public/multitask/training_exps/0920_dpa2_large_28head_MPTraj_gpu8_10M",
+        # "/mnt/workspace/public/multitask/training_exps/0920_dpa2_medium_28head_MPTraj_gpu8_10M",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_12",
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_32",
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
 
     ]
 

@@ -159,15 +159,21 @@ def push_weights():
     with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
         yaml_dd =  yaml.safe_load(f)
 
-    WEIGHTS_E = {k:v['weights_e'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
-    WEIGHTS_F = {k:v['weights_f'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
-    WEIGHTS_V = {k:v['weights_v'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
+    run2record = fet_records_from_table()
+
+    if "Weight" in run2record:
+        method = "put"
+    else:
+        method = "post"
+    WEIGHTS_E = {k:v['energy_weight'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
+    WEIGHTS_F = {k:v['force_weight'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
+    WEIGHTS_V = {k:v['virial_weight'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
     data = {
-        **{f"{k}_e_rmse":v for k, v in WEIGHTS_E.items()},
-        **{f"{k}_f_rmse":v for k, v in WEIGHTS_F.items()},
-        **{f"{k}_v_rmse":v for k, v in WEIGHTS_V.items()}
+        **{f"{k}_e_rmse":v if v is not None else 0 for k, v in WEIGHTS_E.items()},
+        **{f"{k}_f_rmse":v if v is not None else 0 for k, v in WEIGHTS_F.items()},
+        **{f"{k}_v_rmse":v if v is not None else 0 for k, v in WEIGHTS_V.items() }
     }
-    send2table(data, "Weight")
+    send2table(data, "Weight", record_id=run2record.get("Weight"), method=method)
 
 def delete_column():
     url  = (
@@ -267,5 +273,5 @@ def add_column():
 if __name__ == "__main__":
     # delete_column()
     # add_column()
-    # push_weights()
+    push_weights()
     pass

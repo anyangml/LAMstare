@@ -32,7 +32,7 @@ COLOR = [
 
 IND_DATASET_STD = (
     pandas.read_json(
-        "/mnt/data_nas/public/multitask/eval_scripts/baseline_stat_new.json",
+        "/mnt/workspace/cc/LAMstare_new/lamstare/baseline_stat_new.json",
         orient="records",
     )
     .infer_objects()
@@ -99,12 +99,12 @@ def parse_record_dict_to_df(data: dict) -> DataFrame:
 @lru_cache
 def get_weighted_result(exp_path: str) -> DataFrame:
     run_id = exp_path.split("/")[-1]  # Get basename as id
-    print(get_head_weights(exp_path))
     weights = DataFrame.from_dict(
         data=get_head_weights(exp_path), orient="index", columns=["weight"]
     ).rename_axis("Dataset")
+    weights=weights["weight"] # Should use Series
+    weights/=weights.mean() # normalize
     print(weights)
-
     all_records = fetch_dptest_res(run_id, Record)
     all_records_df = parse_record_dict_to_df(all_records)
     all_records_df_raw = all_records_df.copy()
@@ -121,7 +121,6 @@ def get_weighted_result(exp_path: str) -> DataFrame:
         data = all_records_df.loc[
             :, [key for key in all_records_df.keys() if efv in key]
         ]
-        # weights=OOD_DATASET[efv+"_weight"]
         data.mask(weights == 0, inplace=True)
         weighted_avg_efv = (
             data.apply(np.log)
@@ -230,10 +229,15 @@ if __name__ == "__main__":
         # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
-        "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline"
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
+        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline"
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_32",
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_12",
+        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
+        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
+
     ]
     main(exps)
