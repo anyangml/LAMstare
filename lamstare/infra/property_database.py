@@ -36,7 +36,6 @@ class PropertyRecord(Base):
     model_version = Column(String(100))
     task_name = Column(String(256))
     step = Column(Integer)
-    head = Column(String(100))
     property_rmse = Column(Float)
     property_mae = Column(Float)
 

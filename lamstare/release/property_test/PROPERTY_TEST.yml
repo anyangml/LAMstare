@@ -1,0 +1,65 @@
+TASK_TO_HEAD_MAP:
+  dielectric:
+    intensive: true
+    mean: 2.45697701
+    property_dim: 1
+    std: 2.28836481
+    test_path: /mnt/data_nas/public/public_training_data/dielectric/valid
+    train_path: /mnt/data_nas/public/public_training_data/dielectric/train
+    train_steps: 200
+  jdft2d:
+    intensive: true
+    mean: 117.0396
+    property_dim: 1
+    std: 145.525
+    test_path: /mnt/data_nas/public/public_training_data/jdft2d/valid
+    train_path: /mnt/data_nas/public/public_training_data/jdft2d/train
+    train_steps: 100000
+  log_gvrh:
+    intensive: true
+    mean: 1.55292897
+    property_dim: 1
+    std: 0.37077067
+    test_path: /mnt/data_nas/public/public_training_data/log_gvrh/valid
+    train_path: /mnt/data_nas/public/public_training_data/log_gvrh/train
+    train_steps: 100000
+  log_kvrh:
+    intensive: true
+    mean: 1.8800296
+    property_dim: 1
+    std: 0.36726444
+    test_path: /mnt/data_nas/public/public_training_data/log_kvrh/valid
+    train_path: /mnt/data_nas/public/public_training_data/log_kvrh/train
+    train_steps: 100000
+  mp_e_form:
+    intensive: true
+    mean: -1.4071425
+    property_dim: 1
+    std: 1.16326513
+    test_path: /mnt/data_nas/public/public_training_data/mp_e_form/valid
+    train_path: /mnt/data_nas/public/public_training_data/mp_e_form/train
+    train_steps: 200000
+  mp_gap:
+    intensive: true
+    mean: 1.2162048
+    property_dim: 1
+    std: 1.60209919
+    test_path: /mnt/data_nas/public/public_training_data/mp_gap/valid
+    train_path: /mnt/data_nas/public/public_training_data/mp_gap/train
+    train_steps: 200000
+  perovskites:
+    intensive: true
+    mean: 1.47318716
+    property_dim: 1
+    std: 0.74406216
+    test_path: /mnt/data_nas/public/public_training_data/perovskites/valid
+    train_path: /mnt/data_nas/public/public_training_data/perovskites/train
+    train_steps: 100000
+  phonons:
+    intensive: true
+    mean: 571.869
+    property_dim: 1
+    std: 481.02
+    test_path: /mnt/data_nas/public/public_training_data/phonons/valid
+    train_path: /mnt/data_nas/public/public_training_data/phonons/train
+    train_steps: 100000
