@@ -22,7 +22,8 @@ if __name__ == "__main__":
         # "/1114_BASELINE_MACE",
         # "/1114_BASELINE_7net",
         # "/1114_BASELINE_Orb",
-        # "/1114_BASELINE_DP"
+        # "/1114_BASELINE_DP",
+        "/1114_BASELINE_Mattersim",
         # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
         # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",

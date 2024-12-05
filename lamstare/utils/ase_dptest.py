@@ -42,18 +42,18 @@ def run_ase_dptest(
         
         for ls in sys:
             for frame in ls:
-                try:
-                    atoms = frame.to_ase_structure()[0]
-                    atoms.calc = calc
-                    ff = atoms.get_forces()
+                atoms = frame.to_ase_structure()[0]
+                atoms.calc = calc
+                ff = atoms.get_forces()
 
+                energy_predict = np.array(atoms.get_potential_energy())
+                if not np.isnan(energy_predict):
                     atomic_numbers = atoms.get_atomic_numbers()
                     atom_num.append(np.bincount(atomic_numbers, minlength=max_ele_num))
-                    energy_predict = np.array(atoms.get_potential_energy())
+                    
                     energy_pre.append(energy_predict)
                     energy_lab.append(frame.data["energies"])
                     energy_err.append(energy_predict - frame.data["energies"])
-                    print(energy_err)
                     force_err.append(frame.data["forces"].squeeze(0) - np.array(ff))
                     energy_err_per_atom.append(energy_err[-1]/force_err[-1].shape[0])
                     try:
@@ -67,7 +67,7 @@ def run_ase_dptest(
                         virial_err_per_atom.append(virial_err[-1]/force_err[-1].shape[0])
                     except:
                         pass
-                except:
+                else:
                     pass
         
     
@@ -96,7 +96,6 @@ def run_ase_dptest(
         "Virial MAE/Natoms": [np.mean(np.abs(np.stack(virial_err_per_atom)))],
         "Virial RMSE/Natoms": [np.sqrt(np.mean(np.square(np.stack(virial_err_per_atom))))]}
         )
-    print(res)
     return res
 
 def main(model_name, testpath_mapping):
@@ -121,6 +120,9 @@ def main(model_name, testpath_mapping):
             local_cache="pretrained_models",
             cpu=False,
         )
+    elif model_name == "Mattersim":
+        from mattersim.forcefield import MatterSimCalculator
+        CALC = MatterSimCalculator(load_path="MatterSim-v1.0.0-5M.pth", device="cuda")
     else:
         raise ValueError(f"Model {model_name} not supported.")
     
@@ -155,15 +157,14 @@ def main(model_name, testpath_mapping):
 
 if __name__ == "__main__":
     import yaml
-    with open("/mnt/data_nas/public/multitask/LAMstare/lamstare/release/new_OOD_DATASET.yml","r") as f:
+    with open("/mnt/data_nas/cc/LAMstare_new/lamstare/release/ood_test/OOD_DATASET.yml","r") as f:
         yaml_dd =  yaml.safe_load(f)
     
     mapping = {k:v['filepath'] for k, v in yaml_dd["OOD_TO_HEAD_MAP"].items()}
     # main("DP", mapping)
     # main("Orb", mapping)
     # main("MACE", mapping)
-    mapping= {"WBM": mapping["WBM"]}
-    main("EqV2", mapping)
+    main("Mattersim",mapping)
 
     
 

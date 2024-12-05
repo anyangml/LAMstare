@@ -14,7 +14,7 @@ from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 
 
-with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
+with open(os.path.dirname(__file__) + "/../release/ood_test/OOD_DATASET.yml", "r") as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
@@ -27,7 +27,7 @@ for index in OOD_DATASET.keys():
 print(OOD_DATASET)
 
 OOD_DATASET_STD = pandas.read_csv(
-    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
+    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_test/ood_data_std.csv"
 ).infer_objects()
 OOD_DATASET_STD.set_index("Dataset", inplace=True)
 print(OOD_DATASET_STD)
