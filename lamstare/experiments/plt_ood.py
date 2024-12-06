@@ -14,7 +14,7 @@ from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 
 
-with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
+with open(os.path.dirname(__file__) + "/../release/ood_test/OOD_DATASET.yml", "r") as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
@@ -27,7 +27,7 @@ for index in OOD_DATASET.keys():
 print(OOD_DATASET)
 
 OOD_DATASET_STD = pandas.read_csv(
-    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
+    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_test/ood_data_std.csv"
 ).infer_objects()
 OOD_DATASET_STD.set_index("Dataset", inplace=True)
 print(OOD_DATASET_STD)
@@ -45,14 +45,14 @@ def get_weighted_result(exp_path: str) -> DataFrame:
 
     weighted_avg = all_records_df.groupby(
         "Training Steps"
-    ).mean()  # provide a baseline with same shape
+    ).mean().map(lambda x: np.nan)  # provide a df with same shape
+
     # mask.inplace and update() won't work; need to assign to a new variable
     for efv in ["energy", "force", "virial"]:
         data = all_records_df.loc[
             :, [key for key in all_records_df.keys() if efv in key]
         ]
         weights = OOD_DATASET[efv + "_weight"]
-        # data.mask(weights == 0, inplace=True)
         weighted_avg_efv = (
             data.apply(np.log)
             .mul(weights, axis="index")
@@ -60,6 +60,8 @@ def get_weighted_result(exp_path: str) -> DataFrame:
             .mean()
             .apply(np.exp)
         )
+        # mask out the results where NAN exists in the original data
+        weighted_avg_efv.mask(all_records_df.isna().any(axis=1).groupby("Training Steps").any(), inplace=True)
         weighted_avg.update(weighted_avg_efv)
 
     weighted_avg["Dataset"] = "Weighted"
@@ -146,7 +148,6 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        
         "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
         "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
     ]

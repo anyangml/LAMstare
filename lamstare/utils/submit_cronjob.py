@@ -1,5 +1,5 @@
 import logging
-from lamstare.release.submit_ood_test import main as main_ood
+from lamstare.release.ood_test.submit_ood_test import main as main_ood
 from lamstare.experiments.run_test import main as main_ind
 
 if __name__ == "__main__":

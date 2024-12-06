@@ -29,6 +29,7 @@ def get_property_json(params: dict):
         },
         "loss": {
             "type": "property",
+            "property_name":params.get("property_name"),
             "_comment": " that's all"
         },
         "learning_rate": {

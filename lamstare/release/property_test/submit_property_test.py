@@ -33,7 +33,7 @@ def submit_property_test(
                 f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
                 # "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                 f"cd {Path(__file__).resolve().parent};"
-                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name} {property_yml}"
+                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name}"
             ).replace("workspace","data_nas")
             
             job_name = f"PROPERTY-{run_name}"
