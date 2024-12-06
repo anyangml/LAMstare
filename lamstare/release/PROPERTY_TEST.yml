@@ -1,65 +1,148 @@
 TASK_TO_HEAD_MAP:
-  dielectric:
+  qm9_mu:
+    property_name: dipole_moment
     intensive: true
-    mean: 2.45697701
     property_dim: 1
-    std: 2.28836481
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_alpha:
+    property_name: isotropic_polarizability
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_eps_homo:
+    property_name: homo
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_eps_lumo:
+    property_name: lumo
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_deta_eps:
+    property_name: homo_lumo_gap
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_r2_abs:
+    property_name: electronic_spatial_extent
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_zpve:
+    property_name: zpve
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_U_0:
+    property_name: energy_U0
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_U:
+    property_name: energy_U
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_H:
+    property_name: enthalpy_H
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_G:
+    property_name: free_energy
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qm9_c_v:
+    property_name: heat_capacity
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QM9_Property/valid
+    train_path: /mnt/data_nas/public/public_training_data/QM9_Property/train
+    train_steps: 100000
+  qmof_bandgap:
+    property_name: bandgap
+    intensive: true
+    property_dim: 1
+    test_path: /mnt/data_nas/public/public_training_data/QMOF_bandgap/valid
+    train_path: /mnt/data_nas/public/public_training_data/QMOF_bandgap/train
+    train_steps: 100000
+  matbench_dielectric:
+    property_name: dielectric
+    intensive: true
+    property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/dielectric/valid
     train_path: /mnt/data_nas/public/public_training_data/dielectric/train
     train_steps: 200000
-  jdft2d:
+  matbench_jdft2d:
+    property_name: jdft2d
     intensive: true
-    mean: 117.0396
     property_dim: 1
-    std: 145.525
     test_path: /mnt/data_nas/public/public_training_data/jdft2d/valid
     train_path: /mnt/data_nas/public/public_training_data/jdft2d/train
     train_steps: 100000
-  log_gvrh:
+  matbench_log_gvrh:
+    property_name: log_gvrh
     intensive: true
-    mean: 1.55292897
     property_dim: 1
-    std: 0.37077067
     test_path: /mnt/data_nas/public/public_training_data/log_gvrh/valid
     train_path: /mnt/data_nas/public/public_training_data/log_gvrh/train
     train_steps: 100000
-  log_kvrh:
+  matbench_log_kvrh:
+    property_name: log_kvrh
     intensive: true
-    mean: 1.8800296
     property_dim: 1
-    std: 0.36726444
     test_path: /mnt/data_nas/public/public_training_data/log_kvrh/valid
     train_path: /mnt/data_nas/public/public_training_data/log_kvrh/train
     train_steps: 100000
-  mp_e_form:
+  matbench_mp_e_form:
+    property_name: e_form
     intensive: true
-    mean: -1.4071425
     property_dim: 1
-    std: 1.16326513
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form/train
     train_steps: 200000
-  mp_gap:
+  matbench_mp_gap:
+    property_name: gap
     intensive: true
-    mean: 1.2162048
     property_dim: 1
-    std: 1.60209919
     test_path: /mnt/data_nas/public/public_training_data/mp_gap/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_gap/train
     train_steps: 200000
-  perovskites:
+  matbench_perovskites:
+    property_name: perovskites
     intensive: true
-    mean: 1.47318716
     property_dim: 1
-    std: 0.74406216
     test_path: /mnt/data_nas/public/public_training_data/perovskites/valid
     train_path: /mnt/data_nas/public/public_training_data/perovskites/train
     train_steps: 100000
-  phonons:
+  matbench_phonons:
+    property_name: phonons
     intensive: true
-    mean: 571.869
     property_dim: 1
-    std: 481.02
     test_path: /mnt/data_nas/public/public_training_data/phonons/valid
     train_path: /mnt/data_nas/public/public_training_data/phonons/train
     train_steps: 100000
