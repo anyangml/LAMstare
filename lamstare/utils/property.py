@@ -14,8 +14,8 @@ def get_property_json(params: dict):
             "descriptor": params.get("descriptor"),
             "fitting_net": {
             "type": "property",
+            "property_name":params.get("property_name"),
             "intensive": params.get("intensive"),
-            "bias_method": "no_bias",
             "task_dim": params.get("property_dim"),
             "neuron": [
                 240,
@@ -29,14 +29,13 @@ def get_property_json(params: dict):
         },
         "loss": {
             "type": "property",
-            "property_name":params.get("property_name"),
             "_comment": " that's all"
         },
         "learning_rate": {
             "type": "exp",
             "decay_steps": 500,
-            "start_lr": 0.001,
-            "stop_lr": 3.51e-08,
+            "start_lr": float(params.get("start_lr", 1e-3)),
+            "stop_lr": float(params.get("stop_lr", 1e-4)),
             "_comment": "that's all"
         },
         "training": {
@@ -50,14 +49,14 @@ def get_property_json(params: dict):
                  "batch_size": 1,
                 "_comment": "that's all"
             },
-            "numb_steps": params.get("train_steps"),
+            "numb_steps": params.get("train_steps", 100000),
             "warmup_steps": 0,
             "gradient_max_norm": 5.0,
             "max_ckpt_keep": 10,
             "seed": 10,
             "disp_file": "lcurve.out",
-            "disp_freq": int(params.get("train_steps")//100),
-            "save_freq": int(params.get("train_steps")//4),
+            "disp_freq": int(params.get("train_steps", 100000)//100),
+            "save_freq": int(params.get("train_steps", 100000)//10),
             "_comment": "that's all",
         }
     }
@@ -81,21 +80,21 @@ def prepare_property_finetune_folder(pretrain_exp_path:str, task_name:str, step:
     # I. prepare property finetune input.json
     with open(property_yaml, 'r') as f:
         tasks = yaml.load(f, Loader=yaml.FullLoader)["TASK_TO_HEAD_MAP"]
-    
+
     with open(os.path.join(pretrain_exp_path,"input.json"), "r") as f:
         pretrain_config = json.load(f)
-    
+
     params  = tasks[task_name]
     if "loss_dict" in pretrain_config: # multitask input
         params.update({
-            "descriptor": pretrain_config["model"]["shared_dict"]["dpa2_descriptor"],
+            "descriptor": pretrain_config["model"]["shared_dict"]["dpa3_descriptor"],
             "type_map": pretrain_config["model"]["shared_dict"]["type_map_all"]
         })
     else: #single task input
         raise NotImplementedError
 
     finetune_config = get_property_json(params)
-    
+
     with open(os.path.join(finetune_path,"input.json"), "w") as f:
         json.dump(finetune_config, f, indent=4)
 
@@ -134,7 +133,7 @@ def run_property_train_test(finetune_path: str, task_name: str, step: int) -> di
     ret = os.system(command)
     if ret != 0:
         raise RuntimeError(f"Failed to freeze model {model}")
-    
+
     # IV. Test model
     test_result = f"{finetune_path.split('/')[-1]}.txt"
     command = f"dp --pt test -m {f'finetuned_{task_name}.pth'} -f {f'{task_name}_valid.txt'} -l {test_result}"
@@ -142,8 +141,7 @@ def run_property_train_test(finetune_path: str, task_name: str, step: int) -> di
     ret = os.system(command)
     if ret != 0:
         raise RuntimeError(f"Failed to test model {test_result}")
-    
+
     # V. Extract results
     result = extract_info_from_dptest_txt(task_name, test_result,txt_type="property")
     return result
-    

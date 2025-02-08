@@ -22,7 +22,7 @@ def submit_job_to_dlc(job_name:str, command:str):
     data_sources = os.environ["DATA_SOURCES"]
     workspace_id = os.environ["WORKSPACE_ID"]
     resource_id = os.environ["RESOURCE_ID"]
-    priority = 6
+    priority = 9
     worker_count = 1
     worker_gpu = 1
     worker_cpu = 12

@@ -14,7 +14,7 @@ from lamstare.utils.dptest import extract_ood_test_pth_from_yml, get_head_weight
 
 
 def get_ood_to_head_map(
-    mapping_path: str = "OOD_DATASET.yml",
+    mapping_path: str = "OOD_DATASET_v2.yml",
     output_path: str = "./testood",
     overwrite: Optional[bool] = False,
 ) -> Tuple[Dict[str, str], bool]:
@@ -63,7 +63,7 @@ def submit_ood_test(
     model_version: str,
     step: Optional[int] = None,
     is_multitask: bool = True,
-    mapping_path: str = "OOD_DATASET.yml",
+    mapping_path: str = "OOD_DATASET_v2.yml",
     output_path: str = "./testood",
     overwrite: Optional[bool] = False,
 ) -> None:
@@ -84,6 +84,7 @@ def submit_ood_test(
     mapping, is_multitask = get_ood_to_head_map(
         mapping_path=mapping_path, output_path=output_path, overwrite=overwrite
     )  # also generates the dp test input files
+    is_multitask=False
     if step is None:
         step = get_latest_ckpt(exp_path)
     if is_multitask:
@@ -103,7 +104,7 @@ def submit_ood_test(
             if USE_DLC:
                 command = (
                     ". /mnt/data_nas/public/.bashrc; "
-                    f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlamdb')};"
+                    f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
                     "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
                     f"cd {Path(__file__).resolve().parent} ; "
                     f"python3 run_ood_test.py {exp_path} {ood_dataset} {head} {model_version} {step} {testfile} {run_name}"
@@ -141,7 +142,7 @@ def main(exp_path: str, freq: int = 200000, step: Optional[int] = None):
         submit_ood_test(
             exp_path=exp_path,
             model_version="autotest",
-            mapping_path=os.path.dirname(__file__) + "/OOD_DATASET.yml",
+            mapping_path=os.path.dirname(__file__) + "/OOD_DATASET_v2.yml",
             step=step,
             is_multitask=False,
         )

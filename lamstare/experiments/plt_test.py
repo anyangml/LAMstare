@@ -1,5 +1,6 @@
 from collections import defaultdict
 from functools import lru_cache
+from pathlib import Path
 from typing import Union
 
 import matplotlib.pyplot as plt
@@ -92,7 +93,7 @@ def parse_record_dict_to_df(data: dict) -> DataFrame:
     # Set multi-index
     df.set_index(["Dataset", "Training Steps"], inplace=True)
     # sort by Dataset
-    df.sort_index(level=0, inplace=True)
+    # df.sort_index(level=0, inplace=True) # Don't sort, preserve the order in weights definition
     return df
 
 
@@ -122,7 +123,7 @@ def get_weighted_result(exp_path: str) -> DataFrame:
         data = all_records_df.loc[
             :, [key for key in all_records_df.keys() if efv in key]
         ]
-        data.mask(weights == 0, inplace=True)
+        # data.mask(weights == 0, inplace=True) # Should NOT mask here
         weighted_avg_efv = (
             data.apply(np.log)
             .mul(weights, axis="index")
@@ -131,12 +132,14 @@ def get_weighted_result(exp_path: str) -> DataFrame:
             .apply(np.exp)
         )
         # mask out the results where NAN exists in the original data
-        weighted_avg_efv.mask(all_records_df.isna().any(axis=1).groupby("Training Steps").any(), inplace=True)
+        # not working: if a result is not generated, it won't have an entry in the dataframe
+        # weighted_avg_efv.mask(all_records_df.isna().any(axis=1).groupby("Training Steps").any(), inplace=True)
         weighted_avg.update(weighted_avg_efv)
 
     weighted_avg["Dataset"] = "Weighted"
     weighted_avg.reset_index(inplace=True)
     weighted_avg.set_index(["Dataset", "Training Steps"], inplace=True)
+    # weighted_avg.reindex(weights.index,level=0)
     all_records_df = pandas.concat(
         [all_records_df_raw, weighted_avg]
     )  # Preserve masked values
@@ -151,7 +154,9 @@ def plotting(
     legend_handles: list[Line2D],
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
-        assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
+        # assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
+        if dataset not in dataset_to_subplot.keys():
+            continue
         subplot = dataset_to_subplot[dataset]  # type: ignore
         # print(dataset)
         records = records.droplevel("Dataset")
@@ -177,17 +182,10 @@ def plotting(
 
 def main(exps: list[str]):
     # Get all datasets
-    datasets: list[str] = sorted(
-        set(
-            dataset
-            for exp in exps
-            for dataset in get_weighted_result(exp)
-            .index.get_level_values("Dataset")
-            .unique()
-            .tolist()
-        )
-    )
-    datasets.remove("Weighted")  # Assuming it exists
+    datasets: list[str] = DataFrame.from_dict(
+        data=get_head_weights(exps[0]), orient="index", columns=["weight"]
+    ).rename_axis("Dataset").index.tolist()
+    # use -1 for Alex3D->OMat compatibility
     datasets.append("Weighted")  # Move to the end
     print(datasets)
 
@@ -196,6 +194,10 @@ def main(exps: list[str]):
     )
     ax: list[list[Axes]]
     legend_handles: list[Line2D] = []
+
+    # Reverse the order of subplot rows
+    ax = ax[::-1] 
+
     # get axis by dataset name to prevent plotting on wrong axis
     dataset_to_subplot = dict(zip(datasets, ax))
     # add energy/force/virial to the beginning of plots
@@ -205,6 +207,8 @@ def main(exps: list[str]):
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
         plotting(dataset_to_subplot, all_records_df, color, legend_handles)
+
+    
 
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
@@ -224,23 +228,14 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline"
-        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_32",
-        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_12",
-        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
-
+        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24",
+        # "/mnt/data_nas/public/multitask/training_exps/1223_prod_shareft_40GPU_finetune_pref0210_10010",
+        # "/mnt/data_nas/public/multitask/training_exps/1226_prod_shareft_40GPU_finetune_pref0210_10010_lr1e-5",
+        "/mnt/data_nas/public/multitask/training_exps/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1",
+        "/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",
+        # "/mnt/workspace/public/multitask/training_exps/N0130_dpa3a_shareft_128_64_32_scp1_e1a_cdsilu10_rc6_120_arc_4_30_l6_64GPU_240by3_float32",
+        "/mnt/workspace/public/multitask/training_exps/0202_dpa3a_shareft_256_128_32_scp1_e1a_csilu10_rc6_120_arc_4_30_l9_104GPU_240by3"
+        # "/mnt/data_nas/public/multitask/training_exps/0115_dpa3a_shareft_128_64_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_64GPU_240by3_float32"
+  
     ]
     main(exps)

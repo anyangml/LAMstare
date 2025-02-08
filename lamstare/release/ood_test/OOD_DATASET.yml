@@ -113,6 +113,28 @@ OOD_TO_HEAD_MAP:
     force_weight: null
     virial_weight: null
 
+  BiarylDrugFragments:
+    head: Domains_Drug
+    filepath:
+      - /mnt/data_nas/zhangd/data/Drug_manyi_0810/data/Drug_like_torsion_0903/Rawdata_torsion_profile/BiarylDrugFragments
+    energy_weight: null
+    force_weight: null
+    virial_weight: null
+  genentech:
+    head: Domains_Drug
+    filepath:
+      - /mnt/data_nas/zhangd/data/Drug_manyi_0810/data/Drug_like_torsion_0903/Rawdata_torsion_profile/genentech
+    energy_weight: null
+    force_weight: null
+    virial_weight: null
+  raw_torsionnet500:
+    head: Domains_Drug
+    filepath:
+      - /mnt/data_nas/zhangd/data/Drug_manyi_0810/data/Drug_like_torsion_0903/Rawdata_torsion_profile/raw_torsionnet500
+    energy_weight: null
+    force_weight: null
+    virial_weight: null
+
 
   # DNPs_2023_Kr:
   #   head: Domains_Alloy

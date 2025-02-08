@@ -1,6 +1,6 @@
 from functools import lru_cache
 import os
-
+from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
@@ -14,7 +14,7 @@ from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 
 
-with open(os.path.dirname(__file__) + "/../release/ood_test/OOD_DATASET.yml", "r") as f:
+with open(os.path.dirname(__file__) + "/../release/ood_test/OOD_DATASET_v2.yml", "r") as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
@@ -79,6 +79,7 @@ def plotting(
     all_records_df: DataFrame,
     color: str,
     legend_handles: list[Line2D],
+    metric_key: str="rmse"
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
@@ -97,7 +98,7 @@ def plotting(
                 subsubplot.axhline(std, color="purple", linestyle="-.")
                 # note: this will draw duplicated lines
 
-            metric_name = efv + "_rmse" + suffix
+            metric_name = efv + f"_{metric_key}" + suffix
             line = subsubplot.loglog(
                 records.index,  # step
                 records[metric_name],
@@ -109,7 +110,7 @@ def plotting(
     legend_handles.extend(line)  # type: ignore
 
 
-def main(exps: list[str]):
+def main(exps: list[str], metric_key: str="rmse"):
     # Get dataset list from yaml file to preserve the order
     datasets: list[str] = OOD_DATASET.index.tolist()
     datasets.append("Weighted")
@@ -128,11 +129,19 @@ def main(exps: list[str]):
 
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
-        plotting(dataset_to_subplot, all_records_df, color, legend_handles)
+        plotting(dataset_to_subplot, all_records_df, color, legend_handles, metric_key)
 
+    ## to set finer tick
+    from matplotlib.ticker import FixedLocator
+    ax[-1][0].yaxis.set_major_locator(FixedLocator(np.arange(0.02, 0.04, 0.002)))
+    ax[-1][1].yaxis.set_major_locator(FixedLocator(np.arange(0.2, 0.5, 0.04)))
+    ## to handle hpt explosion
+    # for ax in dataset_to_subplot["HPt_NC_2022"]:
+    #     ax.set_ylim(0.05,0.2)
+    
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
-    title = "Compare OOD"
+    title = f"Compare OOD-{metric_key}"
     # fig.suptitle(title) # Poor placement
     fig.legend(
         handles=legend_handles,
@@ -148,7 +157,17 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
+        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
+        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24",
+        # "/mnt/data_nas/public/multitask/training_exps/1223_prod_shareft_40GPU_finetune_pref0210_10010",
+        # "/mnt/data_nas/public/multitask/training_exps/1226_prod_shareft_40GPU_finetune_pref0210_10010_lr1e-5",
+        "/mnt/data_nas/public/multitask/training_exps/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1",
+        "/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",
+        # "/mnt/workspace/public/multitask/training_exps/N0130_dpa3a_shareft_128_64_32_scp1_e1a_cdsilu10_rc6_120_arc_4_30_l6_64GPU_240by3_float32",
+        "/mnt/workspace/public/multitask/training_exps/0202_dpa3a_shareft_256_128_32_scp1_e1a_csilu10_rc6_120_arc_4_30_l9_104GPU_240by3"
+        # "/mnt/data_nas/public/multitask/training_exps/0115_dpa3a_shareft_128_64_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_64GPU_240by3_float32"
+
+
     ]
     main(exps)
+    main(exps, "mae")
