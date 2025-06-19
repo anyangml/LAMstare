@@ -152,6 +152,7 @@ def plotting(
     all_records_df: DataFrame,
     color: str,
     legend_handles: list[Line2D],
+    metric_key:str = "rmse"
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         # assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
@@ -165,7 +166,7 @@ def plotting(
         for efv, suffix, subsubplot in zip(
             ["energy", "force", "virial"], ["_natoms", "", "_natoms"], subplot
         ):
-            metric_name = efv + "_rmse" + suffix
+            metric_name = efv + f"_{metric_key}" + suffix
             line = subsubplot.loglog(
                 records.index,  # step
                 records[metric_name],
@@ -175,12 +176,12 @@ def plotting(
                 alpha=0.8,
             )
             if dataset in IND_DATASET_STD.index:
-                subsubplot.axhline(IND_DATASET_STD.loc[dataset, f"rmse_{efv[0]}"], color="purple", linestyle="-.")  # type: ignore
+                subsubplot.axhline(IND_DATASET_STD.loc[dataset, f"{metric_key}_{efv[0]}"], color="purple", linestyle="-.")  # type: ignore
             # FIXME: this will draw duplicated lines
     legend_handles.extend(line)  # type: ignore
 
 
-def main(exps: list[str]):
+def main(exps: list[str], metric_key:str="rmse"):
     # Get all datasets
     datasets: list[str] = DataFrame.from_dict(
         data=get_head_weights(exps[0]), orient="index", columns=["weight"]
@@ -206,13 +207,13 @@ def main(exps: list[str]):
 
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
-        plotting(dataset_to_subplot, all_records_df, color, legend_handles)
+        plotting(dataset_to_subplot, all_records_df, color, legend_handles, metric_key)
 
     
 
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
-    title = "Compare IND"
+    title = f"Compare IND-{metric_key}"
     # fig.suptitle(title) # Poor placement
     fig.legend(
         handles=legend_handles,
@@ -228,14 +229,12 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24",
-        # "/mnt/data_nas/public/multitask/training_exps/1223_prod_shareft_40GPU_finetune_pref0210_10010",
-        # "/mnt/data_nas/public/multitask/training_exps/1226_prod_shareft_40GPU_finetune_pref0210_10010_lr1e-5",
-        "/mnt/data_nas/public/multitask/training_exps/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1",
-        "/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",
-        # "/mnt/workspace/public/multitask/training_exps/N0130_dpa3a_shareft_128_64_32_scp1_e1a_cdsilu10_rc6_120_arc_4_30_l6_64GPU_240by3_float32",
-        "/mnt/workspace/public/multitask/training_exps/0202_dpa3a_shareft_256_128_32_scp1_e1a_csilu10_rc6_120_arc_4_30_l9_104GPU_240by3"
-        # "/mnt/data_nas/public/multitask/training_exps/0115_dpa3a_shareft_128_64_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_64GPU_240by3_float32"
-  
+        "/mnt/data_nas/public/multitask/training_exps/0211_h20_dpa3a_shareft_256_128_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l9_128GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0325_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0415_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3_restart_16M",
+        "/mnt/data_nas/public/multitask/training_exps/0218_h20_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l16_128GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0326_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rcsm_3_rc6_arcsm_2_arc_4_l16_128GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3",
     ]
     main(exps)
+    main(exps,"mae")

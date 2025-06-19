@@ -14,6 +14,7 @@ def get_property_json(params: dict):
             "descriptor": params.get("descriptor"),
             "fitting_net": {
             "type": "property",
+            "activation_function":"custom_silu:3.0",
             "property_name":params.get("property_name"),
             "intensive": params.get("intensive"),
             "task_dim": params.get("property_dim"),
@@ -41,7 +42,7 @@ def get_property_json(params: dict):
         "training": {
             "training_data":{
                 "systems":params.get("train_path"),
-                 "batch_size": "auto:512",
+                 "batch_size": "auto:256",
                 "_comment": "that's all"
             },
             "validation_data":{
