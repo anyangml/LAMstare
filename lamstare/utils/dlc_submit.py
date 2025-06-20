@@ -16,11 +16,12 @@ def query_job_numbers(job_name:str):
         return 0
     return 1
 
-def submit_job_to_dlc(job_name:str, command:str=None):
+def submit_job_to_dlc(job_name:str, command:str):
     template = yaml.safe_load(open("/aisi/public/multitask/LAMstare/logs/job_template.yaml", "r"))
     template["TaskName"] = job_name
     template["Description"] = ""
     template["ResourceQueueID"] = "q-20250618190306-vzjfq"
+    template.pop("UserCodePath", None)  # Remove UserCodePath if it exists
     template["Framework"] = "PyTorchDDP"
     template["Storages"] = [
     {
@@ -39,15 +40,10 @@ def submit_job_to_dlc(job_name:str, command:str=None):
     ]
     template["ImageUrl"] = "dp-ve-registry-cn-beijing.cr.volces.com/aisi/deepmd:0210"
 
-    command = ("ln -s  /aisi /mnt/data_nas\n"
-                "source /mnt/data_nas/public/.bashrc\n"
-                "conda activate  /mnt/data_nas/public/miniconda3/envs/lamstare\n"
-                "nvidia-smi\n\n"
-                "set -x\n"
-                f"cd /mnt/data_nas/public/multitask/LAMstare/lamstare/utils \n"
-                f"echo hellohello > test.txt\n")
+    combined_command = ("ln -s  /aisi /mnt/data_nas\n"
+            f"{command}")
 
-    template['Entrypoint'] = command
+    template['Entrypoint'] = combined_command
     yaml_file = f"/aisi/public/multitask/LAMstare/logs/{job_name}.yaml"
     with open(yaml_file, "w") as f:
         yaml.dump(template, f)
@@ -58,6 +54,3 @@ def submit_job_to_dlc(job_name:str, command:str=None):
         logging.warning('Warning: ret = subprocess.check_output(cmd).decode(\'utf-8\') has failed')
     job_id = ret.split("task_id=")[-1].strip()
     logging.info(f'Job submitted : {job_id}')
-
-if __name__ == "__main__":
-    print(submit_job_to_dlc("250618_dpa3_omol25_singletask_96GPU_l24thin"))
