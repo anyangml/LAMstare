@@ -8,3 +8,5 @@ __pycache__
 *.jpg
 testood/
 finetune*/
+logs/
+pretrained_models/

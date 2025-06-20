@@ -33,7 +33,7 @@ COLOR = [
 
 IND_DATASET_STD = (
     pandas.read_json(
-        "/mnt/data_nas/cc/LAMstare_new/lamstare/baseline_stat_new.json",
+        "/mnt/data_nas/public/multitask/LAMstare/lamstare/baseline_stat_new.json",
         orient="records",
     )
     .infer_objects()

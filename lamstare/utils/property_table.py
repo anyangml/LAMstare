@@ -184,7 +184,9 @@ if __name__ == "__main__":
     # add_column()
     # push_weights()
     main([
-        "/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",
+        # "/0211_h20_dpa3a_shareft_256_128_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l9_128GPU_240by3",
+        # "/h20_dpa3a_shareft_256_128_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l9_128GPU_240by3",
+        "/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3"
         # "/1126_prod_shareft_120GUP_240by3_single_384_96_24",
         # "/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1",
         # "/prod_shareft_120GUP_240by3_single_384_96_24",

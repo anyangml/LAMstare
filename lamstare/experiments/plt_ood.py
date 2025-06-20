@@ -27,7 +27,7 @@ for index in OOD_DATASET.keys():
 print(OOD_DATASET)
 
 OOD_DATASET_STD = pandas.read_csv(
-    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_test/ood_data_std.csv"
+    "/mnt/data_nas/public/multitask/LAMstare/lamstare/release/ood_test/ood_data_std.csv"
 ).infer_objects()
 OOD_DATASET_STD.set_index("Dataset", inplace=True)
 print(OOD_DATASET_STD)
@@ -82,6 +82,9 @@ def plotting(
     metric_key: str="rmse"
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
+        # removing two ood test sets
+        if dataset in ["Sub_Alex_val", "raw_torsionnet500"]:
+            continue
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
         subplot = dataset_to_subplot[dataset]  # type: ignore
         # print(dataset)
@@ -157,17 +160,13 @@ def main(exps: list[str], metric_key: str="rmse"):
 
 if __name__ == "__main__":
     exps = [
-        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24",
-        # "/mnt/data_nas/public/multitask/training_exps/1223_prod_shareft_40GPU_finetune_pref0210_10010",
-        # "/mnt/data_nas/public/multitask/training_exps/1226_prod_shareft_40GPU_finetune_pref0210_10010_lr1e-5",
-        "/mnt/data_nas/public/multitask/training_exps/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1",
-        "/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",
-        # "/mnt/workspace/public/multitask/training_exps/N0130_dpa3a_shareft_128_64_32_scp1_e1a_cdsilu10_rc6_120_arc_4_30_l6_64GPU_240by3_float32",
-        "/mnt/workspace/public/multitask/training_exps/0202_dpa3a_shareft_256_128_32_scp1_e1a_csilu10_rc6_120_arc_4_30_l9_104GPU_240by3"
-        # "/mnt/data_nas/public/multitask/training_exps/0115_dpa3a_shareft_128_64_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_64GPU_240by3_float32"
-
-
+        # "/mnt/data_nas/public/multitask/training_exps/0211_h20_dpa3a_shareft_256_128_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l9_128GPU_240by3",
+        # "/mnt/data_nas/public/multitask/training_exps/0325_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3",
+        # "/mnt/data_nas/public/multitask/training_exps/0415_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3_restart_16M",
+        # "/mnt/data_nas/public/multitask/training_exps/0218_h20_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l16_128GPU_240by3",
+        # "/mnt/data_nas/public/multitask/training_exps/0326_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rcsm_3_rc6_arcsm_2_arc_4_l16_128GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3",
+        "/mnt/data_nas/public/multitask/training_exps/0415_DPA3.1_3M_new_dptest_drug_omat24"
     ]
     main(exps)
     main(exps, "mae")

@@ -59,6 +59,9 @@ def find_ckpt_to_test_cron(
         previous_tested_step = int(record_type.query(run_id=run_id)[-1].step)  # type: ignore
     else:
         previous_tested_step = 0
+        # hack for restart
+        if "restart" in exp_path:
+            previous_tested_step = 8000000
     logging.info(
         f"Latest ckpt tested: {previous_tested_step}, Latest ckpt available: {latest_ckpt_step}\n"
     )

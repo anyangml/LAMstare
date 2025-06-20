@@ -90,193 +90,193 @@ TASK_TO_HEAD_MAP:
   #   test_path: /mnt/data_nas/public/public_training_data/QMOF_bandgap/valid
   #   train_path: /mnt/data_nas/public/public_training_data/QMOF_bandgap/train
   #   train_steps: 500000
-  matbench_dielectric:
-    property_name: dielectric
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/dielectric/valid
-    train_path: /mnt/data_nas/public/public_training_data/dielectric/train
-    train_steps: 200000
-    start_lr: 3e-4
-    stop_lr: 1e-5
-  matbench_dielectric_fold1:
-    property_name: dielectric
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/dielectric_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/dielectric_1/train
-    train_steps: 200000
-    start_lr: 3e-4
-    stop_lr: 1e-5
-  matbench_dielectric_fold2:
-    property_name: dielectric
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/dielectric_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/dielectric_2/train
-    train_steps: 200000
-    start_lr: 3e-4
-    stop_lr: 1e-5
-  matbench_dielectric_fold3:
-    property_name: dielectric
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/dielectric_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/dielectric_3/train
-    train_steps: 200000
-    start_lr: 3e-4
-    stop_lr: 1e-5
-  matbench_dielectric_fold4:
-    property_name: dielectric
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/dielectric_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/dielectric_4/train
-    train_steps: 200000
-    start_lr: 3e-4
-    stop_lr: 1e-5
-  matbench_jdft2d:
-    property_name: jdft2d
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/jdft2d/valid
-    train_path: /mnt/data_nas/public/public_training_data/jdft2d/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  matbench_jdft2d_fold1:
-    property_name: jdft2d
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/jdft2d_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/jdft2d_1/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  matbench_jdft2d_fold2:
-    property_name: jdft2d
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/jdft2d_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/jdft2d_2/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  matbench_jdft2d_fold3:
-    property_name: jdft2d
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/jdft2d_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/jdft2d_3/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  matbench_jdft2d_fold4:
-    property_name: jdft2d
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/jdft2d_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/jdft2d_4/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  matbench_log_gvrh:
-    property_name: log_gvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_gvrh/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_gvrh/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_gvrh_fold1:
-    property_name: log_gvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_gvrh_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_gvrh_1/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_gvrh_fold2:
-    property_name: log_gvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_gvrh_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_gvrh_2/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_gvrh_fold3:
-    property_name: log_gvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_gvrh_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_gvrh_3/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_gvrh_fold4:
-    property_name: log_gvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_gvrh_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_gvrh_4/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_kvrh:
-    property_name: log_kvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_kvrh/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_kvrh/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_kvrh_fold1:
-    property_name: log_kvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_kvrh_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_kvrh_1/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_kvrh_fold2:
-    property_name: log_kvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_kvrh_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_kvrh_2/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_kvrh_fold3:
-    property_name: log_kvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_kvrh_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_kvrh_3/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_log_kvrh_fold4:
-    property_name: log_kvrh
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/log_kvrh_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/log_kvrh_4/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
+  # matbench_dielectric:
+  #   property_name: dielectric
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/dielectric/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/dielectric/train
+  #   train_steps: 200000
+  #   start_lr: 3e-4
+  #   stop_lr: 1e-5
+  # matbench_dielectric_fold1:
+  #   property_name: dielectric
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/dielectric_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/dielectric_1/train
+  #   train_steps: 200000
+  #   start_lr: 3e-4
+  #   stop_lr: 1e-5
+  # matbench_dielectric_fold2:
+  #   property_name: dielectric
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/dielectric_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/dielectric_2/train
+  #   train_steps: 200000
+  #   start_lr: 3e-4
+  #   stop_lr: 1e-5
+  # matbench_dielectric_fold3:
+  #   property_name: dielectric
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/dielectric_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/dielectric_3/train
+  #   train_steps: 200000
+  #   start_lr: 3e-4
+  #   stop_lr: 1e-5
+  # matbench_dielectric_fold4:
+  #   property_name: dielectric
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/dielectric_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/dielectric_4/train
+  #   train_steps: 200000
+  #   start_lr: 3e-4
+  #   stop_lr: 1e-5
+  # matbench_jdft2d:
+  #   property_name: jdft2d
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/jdft2d/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/jdft2d/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # matbench_jdft2d_fold1:
+  #   property_name: jdft2d
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/jdft2d_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/jdft2d_1/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # matbench_jdft2d_fold2:
+  #   property_name: jdft2d
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/jdft2d_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/jdft2d_2/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # matbench_jdft2d_fold3:
+  #   property_name: jdft2d
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/jdft2d_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/jdft2d_3/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # matbench_jdft2d_fold4:
+  #   property_name: jdft2d
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/jdft2d_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/jdft2d_4/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # matbench_log_gvrh:
+  #   property_name: log_gvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_gvrh/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_gvrh/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_gvrh_fold1:
+  #   property_name: log_gvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_gvrh_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_gvrh_1/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_gvrh_fold2:
+  #   property_name: log_gvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_gvrh_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_gvrh_2/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_gvrh_fold3:
+  #   property_name: log_gvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_gvrh_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_gvrh_3/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_gvrh_fold4:
+  #   property_name: log_gvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_gvrh_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_gvrh_4/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_kvrh:
+  #   property_name: log_kvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_kvrh/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_kvrh/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_kvrh_fold1:
+  #   property_name: log_kvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_kvrh_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_kvrh_1/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_kvrh_fold2:
+  #   property_name: log_kvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_kvrh_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_kvrh_2/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_kvrh_fold3:
+  #   property_name: log_kvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_kvrh_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_kvrh_3/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_log_kvrh_fold4:
+  #   property_name: log_kvrh
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/log_kvrh_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/log_kvrh_4/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
   matbench_mp_e_form:
     property_name: mp_e_form
     intensive: true
     property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form/train
-    train_steps: 500000
+    train_steps: 5000000
     start_lr: 1e-3
     stop_lr: 1e-6
   matbench_mp_e_form_fold1:
@@ -285,7 +285,7 @@ TASK_TO_HEAD_MAP:
     property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form_1/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form_1/train
-    train_steps: 500000
+    train_steps: 5000000
     start_lr: 1e-3
     stop_lr: 1e-6
   matbench_mp_e_form_fold2:
@@ -294,7 +294,7 @@ TASK_TO_HEAD_MAP:
     property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form_2/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form_2/train
-    train_steps: 500000
+    train_steps: 5000000
     start_lr: 1e-3
     stop_lr: 1e-6
   matbench_mp_e_form_fold3:
@@ -303,7 +303,7 @@ TASK_TO_HEAD_MAP:
     property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form_3/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form_3/train
-    train_steps: 500000
+    train_steps: 5000000
     start_lr: 1e-3
     stop_lr: 1e-6
   matbench_mp_e_form_fold4:
@@ -312,197 +312,197 @@ TASK_TO_HEAD_MAP:
     property_dim: 1
     test_path: /mnt/data_nas/public/public_training_data/mp_e_form_4/valid
     train_path: /mnt/data_nas/public/public_training_data/mp_e_form_4/train
-    train_steps: 500000
+    train_steps: 5000000
     start_lr: 1e-3
     stop_lr: 1e-6
-  matbench_mp_gap:
-    property_name: mp_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/mp_gap/valid
-    train_path: /mnt/data_nas/public/public_training_data/mp_gap/train
-    train_steps: 500000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  matbench_mp_gap_fold1:
-    property_name: mp_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/mp_gap_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/mp_gap_1/train
-    train_steps: 500000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  matbench_mp_gap_fold2:
-    property_name: mp_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/mp_gap_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/mp_gap_2/train
-    train_steps: 500000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  matbench_mp_gap_fold3:
-    property_name: mp_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/mp_gap_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/mp_gap_3/train
-    train_steps: 500000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  matbench_mp_gap_fold4:
-    property_name: mp_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/mp_gap_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/mp_gap_4/train
-    train_steps: 500000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  matbench_perovskites:
-    property_name: perovskites
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/perovskites/valid
-    train_path: /mnt/data_nas/public/public_training_data/perovskites/train
-    train_steps: 100000
-  matbench_perovskites_fold1:
-    property_name: perovskites
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/perovskites_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/perovskites_1/train
-    train_steps: 100000
-  matbench_perovskites_fold2:
-    property_name: perovskites
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/perovskites_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/perovskites_2/train
-    train_steps: 100000
-  matbench_perovskites_fold3:
-    property_name: perovskites
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/perovskites_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/perovskites_3/train
-    train_steps: 100000
-  matbench_perovskites_fold4:
-    property_name: perovskites
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/perovskites_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/perovskites_4/train
-    train_steps: 100000
-  matbench_phonons:
-    property_name: phonons
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/phonons/valid
-    train_path: /mnt/data_nas/public/public_training_data/phonons/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_phonons_fold1:
-    property_name: phonons
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/phonons_1/valid
-    train_path: /mnt/data_nas/public/public_training_data/phonons_1/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_phonons_fold2:
-    property_name: phonons
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/phonons_2/valid
-    train_path: /mnt/data_nas/public/public_training_data/phonons_2/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_phonons_fold3:
-    property_name: phonons
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/phonons_3/valid
-    train_path: /mnt/data_nas/public/public_training_data/phonons_3/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  matbench_phonons_fold4:
-    property_name: phonons
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/phonons_4/valid
-    train_path: /mnt/data_nas/public/public_training_data/phonons_4/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-4
-  unconvbench_2d_exfoliation:
-    property_name: unconvbench_exfoliation
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_exfoliation/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_exfoliation/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-6
-  unconvbench_2d_total_e:
-    property_name: unconvbench_2d_e_tot
-    intensive: false
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_e_tot/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_e_tot/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-5
-  unconvbench_2d_bandgap:
-    property_name: unconvbench_2d_gap
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_gap/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_gap/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-5
-  unconvbench_co2_adsp:
-    property_name: unconvbench_co2_adsp
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_co2_adsp/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_co2_adsp/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 3e-8
-  unconvbench_qmof:
-    property_name: unconvbench_qmof
-    intensive: false
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_qmof/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_qmof/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-5
-  unconvbench_supercon:
-    property_name: unconvbench_supercon
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_supercon/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_supercon/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-5
-  unconvbench_defected:
-    property_name: unconvbench_defected
-    intensive: true
-    property_dim: 1
-    test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_defected/valid
-    train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_defected/train
-    train_steps: 100000
-    start_lr: 1e-3
-    stop_lr: 1e-8
+  # matbench_mp_gap:
+  #   property_name: mp_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/mp_gap/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/mp_gap/train
+  #   train_steps: 5000000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # matbench_mp_gap_fold1:
+  #   property_name: mp_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/mp_gap_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/mp_gap_1/train
+  #   train_steps: 5000000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # matbench_mp_gap_fold2:
+  #   property_name: mp_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/mp_gap_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/mp_gap_2/train
+  #   train_steps: 5000000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # matbench_mp_gap_fold3:
+  #   property_name: mp_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/mp_gap_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/mp_gap_3/train
+  #   train_steps: 5000000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # matbench_mp_gap_fold4:
+  #   property_name: mp_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/mp_gap_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/mp_gap_4/train
+  #   train_steps: 5000000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # matbench_perovskites:
+  #   property_name: perovskites
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/perovskites/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/perovskites/train
+  #   train_steps: 100000
+  # matbench_perovskites_fold1:
+  #   property_name: perovskites
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/perovskites_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/perovskites_1/train
+  #   train_steps: 100000
+  # matbench_perovskites_fold2:
+  #   property_name: perovskites
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/perovskites_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/perovskites_2/train
+  #   train_steps: 100000
+  # matbench_perovskites_fold3:
+  #   property_name: perovskites
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/perovskites_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/perovskites_3/train
+  #   train_steps: 100000
+  # matbench_perovskites_fold4:
+  #   property_name: perovskites
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/perovskites_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/perovskites_4/train
+  #   train_steps: 100000
+  # matbench_phonons:
+  #   property_name: phonons
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/phonons/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/phonons/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_phonons_fold1:
+  #   property_name: phonons
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/phonons_1/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/phonons_1/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_phonons_fold2:
+  #   property_name: phonons
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/phonons_2/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/phonons_2/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_phonons_fold3:
+  #   property_name: phonons
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/phonons_3/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/phonons_3/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # matbench_phonons_fold4:
+  #   property_name: phonons
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/phonons_4/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/phonons_4/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-4
+  # unconvbench_2d_exfoliation:
+  #   property_name: unconvbench_exfoliation
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_exfoliation/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_exfoliation/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-6
+  # unconvbench_2d_total_e:
+  #   property_name: unconvbench_2d_e_tot
+  #   intensive: false
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_e_tot/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_e_tot/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-5
+  # unconvbench_2d_bandgap:
+  #   property_name: unconvbench_2d_gap
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_gap/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_2d_gap/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-5
+  # unconvbench_co2_adsp:
+  #   property_name: unconvbench_co2_adsp
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_co2_adsp/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_co2_adsp/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 3e-8
+  # unconvbench_qmof:
+  #   property_name: unconvbench_qmof
+  #   intensive: false
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_qmof/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_qmof/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-5
+  # unconvbench_supercon:
+  #   property_name: unconvbench_supercon
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_supercon/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_supercon/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-5
+  # unconvbench_defected:
+  #   property_name: unconvbench_defected
+  #   intensive: true
+  #   property_dim: 1
+  #   test_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_defected/valid
+  #   train_path: /mnt/data_nas/public/public_training_data/Unconvbench_property/unconvbench_defected/train
+  #   train_steps: 100000
+  #   start_lr: 1e-3
+  #   stop_lr: 1e-8
   # unconvbench_src_bulk:
   #   property_name: unconvbench_src_bulk
   #   intensive: true
