@@ -103,7 +103,7 @@ def submit_ood_test(
         if record_count == 0:
             if USE_DLC:
                 command = (
-                    ". /mnt/data_nas/public/.bashrc; "
+                    ". /mnt/data_nas/public/miniconda3/etc/profile.d/conda.sh; "
                     f"conda activate /mnt/data_nas/public/miniconda3/envs/{os.environ.get('CONDA_ENV','lamstare')};"
                     "export PYTHONPATH=/mnt/data_nas/public/multitask/LAMstare;"
                     f"cd {Path(__file__).resolve().parent} ; "

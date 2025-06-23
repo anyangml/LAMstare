@@ -18,7 +18,7 @@ def query_job_numbers(job_name:str):
 
 def submit_job_to_dlc(job_name:str, command:str):
     template = yaml.safe_load(open("/aisi/public/multitask/LAMstare/logs/job_template.yaml", "r"))
-    template["TaskName"] = job_name
+    template["TaskName"] = job_name.replace("#", "井")
     template["Description"] = ""
     template["ResourceQueueID"] = "q-20250618190306-vzjfq"
     template.pop("UserCodePath", None)  # Remove UserCodePath if it exists
@@ -40,10 +40,10 @@ def submit_job_to_dlc(job_name:str, command:str):
     ]
     template["ImageUrl"] = "dp-ve-registry-cn-beijing.cr.volces.com/aisi/deepmd:0210"
 
-    combined_command = ("ln -s  /aisi /mnt/data_nas\n"
-            f"{command}")
+    # combined_command = ("ln -s  /aisi /mnt/data_nas\n"
+    #         f"{command}")
 
-    template['Entrypoint'] = combined_command
+    template['Entrypoint'] = command
     yaml_file = f"/aisi/public/multitask/LAMstare/logs/{job_name}.yaml"
     with open(yaml_file, "w") as f:
         yaml.dump(template, f)
