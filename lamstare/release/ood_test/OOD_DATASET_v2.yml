@@ -1,9 +1,9 @@
 IS_MULTI_TASK: true
 OOD_TO_HEAD_MAP:
-  ANI:
-    head: Domains_Drug
+  AQM-sol:
+    head: OMol25
     filepath:
-     - /mnt/data_nas/public/OOD_test_data_v2/ANI
+     - /mnt/data_nas/public/AQM-sol-PBE0
     energy_weight: 1
     force_weight: 1
     virial_weight: null
@@ -28,13 +28,6 @@ OOD_TO_HEAD_MAP:
     energy_weight: 1
     force_weight: 1
     virial_weight: 1
-  MD22:
-    head: Domains_Drug
-    filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/MD22
-    energy_weight: 1
-    force_weight: 1
-    virial_weight: null
   COLL_test:
     head: Omat24
     filepath:
@@ -64,7 +57,7 @@ OOD_TO_HEAD_MAP:
     force_weight: 1
     virial_weight: null
   Chig_AIMD:
-    head: Domains_Drug
+    head: OMol25
     filepath:
       - /mnt/data_nas/public/OOD_test_data_v2/AIMD_Chig
     energy_weight: 1
