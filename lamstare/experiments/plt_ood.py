@@ -83,7 +83,7 @@ def plotting(
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         # removing two ood test sets
-        if dataset in ["Sub_Alex_val", "raw_torsionnet500"]:
+        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "ANI", "MD22"]:
             continue
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
         subplot = dataset_to_subplot[dataset]  # type: ignore
@@ -160,7 +160,14 @@ def main(exps: list[str], metric_key: str="rmse"):
 
 if __name__ == "__main__":
     exps = [
-        "/mnt/data_nas/public/multitask/training_exps/250618_openlam_v2_fparam_test"
+        # "/mnt/data_nas/public/multitask/training_exps/250618_openlam_v2_fparam_test",
+        # "/aisi/public/multitask/training_exps/250625_openlam_v2_fparam_test_old_weight",
+        "/aisi/public/multitask/training_exps/250627_dpa3_openlam_v2_new_weight_8M",
+        "/aisi/public/multitask/training_exps/250627_dpa3_openlam_v2_old_weight_8M",
+        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/dpa3.1-3m",
+        "/aisi/public/multitask/training_exps/250630_dpa3_openlam_v1_old_weight_8M_compare0415",
+        "/aisi/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3"
     ]
     main(exps)
     main(exps, "mae")

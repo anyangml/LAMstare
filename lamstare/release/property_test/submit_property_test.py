@@ -30,9 +30,9 @@ def submit_property_test(
             finetune_path = prepare_property_finetune_folder(exp_path, task_name, step, property_yml, output_path)
             command = (
                 "export NUM_WORKERS=0; "
-                ". /mnt/data_nas/public/.bashrc; "
-                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
-                "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
+                ". /mnt/data_nas/penganyang/.bashrc; "
+                f"conda activate /mnt/data_nas/penganyang/miniconda3/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
+                "export PYTHONPATH=/mnt/data_nas/public/multitask/LAMstare;"
                 f"cd {Path(__file__).resolve().parent};"
                 f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name}"
             ).replace("workspace","data_nas")

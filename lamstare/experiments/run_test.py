@@ -29,8 +29,8 @@ def submit_ind_test(exp_path: str, step: int):
             job_name = f"IND_{run_name}"
             command = (
                 f"#!/bin/bash \n"
-                f". /mnt/data_nas/public/miniconda3/etc/profile.d/conda.sh \n"
-                f"conda activate /mnt/data_nas/public/miniconda3/envs/{os.environ.get('CONDA_ENV','lamstare')} \n"
+                f". /mnt/data_nas/penganyang/miniconda3/etc/profile.d/conda.sh \n"
+                f"conda activate /mnt/data_nas/penganyang/miniconda3/envs/{os.environ.get('CONDA_ENV','lamstare')} \n"
                 f"export PYTHONPATH=/mnt/data_nas/public/multitask/LAMstare \n"
                 f"cd {Path(__file__).resolve().parent} \n"
                 f"python3 run_ind_test.py {exp_path} {head} {step} {testfile} {run_name} \n"
