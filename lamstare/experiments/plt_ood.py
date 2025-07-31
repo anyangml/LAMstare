@@ -61,9 +61,9 @@ def get_weighted_result(exp_path: str) -> DataFrame:
             .apply(np.exp)
         )
         # mask out the results where NAN exists in the original data
-        weighted_avg_efv.mask(all_records_df.isna().any(axis=1).groupby("Training Steps").any(), inplace=True)
+        weighted_avg_efv.mask(all_records_df["energy_mae"].isna().groupby("Training Steps").any(), inplace=True)
         weighted_avg.update(weighted_avg_efv)
-
+   
     weighted_avg["Dataset"] = "Weighted"
     weighted_avg.reset_index(inplace=True)
     weighted_avg.set_index(["Dataset", "Training Steps"], inplace=True)
@@ -83,7 +83,7 @@ def plotting(
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         # removing two ood test sets
-        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "ANI", "MD22"]:
+        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "HEA25", "HEMC_HEMB", "WBM", "ANI", "MD22"]:
             continue
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
         subplot = dataset_to_subplot[dataset]  # type: ignore
@@ -160,14 +160,18 @@ def main(exps: list[str], metric_key: str="rmse"):
 
 if __name__ == "__main__":
     exps = [
-        # "/mnt/data_nas/public/multitask/training_exps/250618_openlam_v2_fparam_test",
-        # "/aisi/public/multitask/training_exps/250625_openlam_v2_fparam_test_old_weight",
-        "/aisi/public/multitask/training_exps/250627_dpa3_openlam_v2_new_weight_8M",
-        "/aisi/public/multitask/training_exps/250627_dpa3_openlam_v2_old_weight_8M",
-        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        # "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        # "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_new_weight_8M_l16",
         "/aisi/public/multitask/training_exps/dpa3.1-3m",
-        "/aisi/public/multitask/training_exps/250630_dpa3_openlam_v1_old_weight_8M_compare0415",
-        "/aisi/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3"
+        # "/aisi/public/multitask/training_exps/250714_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        # "/aisi/public/multitask/training_exps/250714_dpa3_openlam_v2_old_weight_22task",
+        # "/aisi/public/multitask/training_exps/250630_dpa3_openlam_v1_old_weight_8M_compare0415",
+        # "/aisi/public/multitask/training_exps/250703_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        "/aisi/public/multitask/training_exps/250722_dpa3_openlam_v2_old_weight_22task_deepcsp_mpgen",
+        "/aisi-nas/public/training_experiments/250728_dpa3_l24_lr1e-3_1e-6_pref0.2_20_100_60_openlam_v2_GPU64_H20_filter128"
+        # "/aisi/public/multitask/training_exps/250707_dpa3_openlam_v2_8M_L16_omol_2nd_fitting",
+        # "/aisi/public/multitask/training_exps/250708_dpa3_openlam_v2_8M_L16_omol_2fting_with_default_fparam",
+        # "/aisi/public/multitask/training_exps/250710_dpa3_openlam_v2_old_weight_8M_L16_remove_mptrj",
     ]
     main(exps)
-    main(exps, "mae")
+    # main(exps, "mae")

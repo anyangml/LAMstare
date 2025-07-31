@@ -229,12 +229,12 @@ def main(exps: list[str], metric_key:str="rmse"):
 
 if __name__ == "__main__":
     exps = [
-        "/mnt/data_nas/public/multitask/training_exps/0211_h20_dpa3a_shareft_256_128_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l9_128GPU_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/0325_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/0415_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rcs_3_rc6_120_arcs_2_arc_4_30_l6_64GPU_240by3_restart_16M",
-        "/mnt/data_nas/public/multitask/training_exps/0218_h20_dpa3a_shareft_128_64_32_scp1_e1a_csilu3_rc6_120_arc_4_30_l16_128GPU_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/0326_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rcsm_3_rc6_arcsm_2_arc_4_l16_128GPU_240by3",
-        "/mnt/data_nas/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3",
+        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_new_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/250703_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        "/aisi/public/multitask/training_exps/250707_dpa3_openlam_v2_8M_L16_omol_2nd_fitting",
+        "/aisi/public/multitask/training_exps/250708_dpa3_openlam_v2_8M_L16_omol_2fting_with_default_fparam",
+        "/aisi/public/multitask/training_exps/250710_dpa3_openlam_v2_old_weight_8M_L16_remove_mptrj",
     ]
     main(exps)
     main(exps,"mae")

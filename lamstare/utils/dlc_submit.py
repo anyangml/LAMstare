@@ -8,7 +8,7 @@ load_dotenv()
 
 def query_job_numbers(job_name:str):
 
-    cmd = f"export PATH=/root/.volc/bin/:$PATH; volc ml_task list  --status Queue,Staging,Running -n {job_name.replace('#', '井')} --output json"
+    cmd = f"export PATH=/root/.volc/bin/:$PATH; volc ml_task list  --status Queue,Staging,Running -n {job_name.replace('#', '井').replace('.','点')} --output json"
     logging.debug(f"Querying job status with command: \n{cmd}")
     ret = subprocess.run(cmd, shell=True, check=False, text=True, capture_output=True)
     logging.info(f"Command output: \n{ret.stdout}")
@@ -22,7 +22,7 @@ def query_job_numbers(job_name:str):
 
 def submit_job_to_dlc(job_name:str, command:str):
     template = yaml.safe_load(open("/aisi/public/multitask/LAMstare/logs/job_template.yaml", "r"))
-    template["TaskName"] = job_name.replace("#", "井")
+    template["TaskName"] = job_name.replace("#", "井").replace('.','点')
     template["Description"] = ""
     template["ResourceQueueID"] = "q-20250618190306-vzjfq"
     template.pop("UserCodePath", None)  # Remove UserCodePath if it exists
@@ -34,6 +34,13 @@ def submit_job_to_dlc(job_name:str, command:str):
         "MountPath": "/aisi",
         "VepfsId": "vepfs-cnbj6c0df4e46c0f",
         "SubPath": ""
+    },
+    {
+        "Type": "Nas",
+        "MountPath": "/aisi-nas",
+        # "NasAddr": "cnbje8a153ae6108.13f6jwazr5q0w3n6nu5hgnoxu.nas.ivolces.com:/",
+        "NasId": "anas-cnbje8a153ae6108",
+        # "NasName": "aisi-nas"
     }
     ]
     template["TaskRoleSpecs"] = [

@@ -7,13 +7,34 @@ OOD_TO_HEAD_MAP:
     energy_weight: 1
     force_weight: 1
     virial_weight: null
-  HEA25:
+  RXN_XTB:
+    head: OMol25
+    filepath:
+      - /mnt/data_nas/public/CHON_xtb_downsampled
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  Methane-Activation:
     head: Omat24
     filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/HEA25
+      - /mnt/data_nas/public/MethaneAct_ClusterTS
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  MoS2:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/MoS2
     energy_weight: 1
     force_weight: 1
     virial_weight: 1
+  # HEA25:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/HEA25
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: 1
   HEA25S:
     head: Omat24
     filepath:
@@ -21,13 +42,13 @@ OOD_TO_HEAD_MAP:
     energy_weight: 1
     force_weight: 1
     virial_weight: 1
-  HEMC_HEMB:
-    head: Omat24
-    filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/HEMC_HEMB
-    energy_weight: 1
-    force_weight: 1
-    virial_weight: 1
+  # HEMC_HEMB:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/HEMC_HEMB
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: 1
   COLL_test:
     head: Omat24
     filepath:
@@ -98,12 +119,12 @@ OOD_TO_HEAD_MAP:
     energy_weight: 1
     force_weight: 1
     virial_weight: null
-  WBM:
-    head: Omat24
-    filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/WBM_downsampled
-    energy_weight: 1
-    force_weight: null
-    virial_weight: null
+  # WBM:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/WBM_downsampled
+  #   energy_weight: 1
+  #   force_weight: null
+  #   virial_weight: null
   
   

@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 import yaml
 from dotenv import load_dotenv
-
+import numpy as np
 from lamstare.utils.dlc_submit import submit_job_to_dlc
 
 load_dotenv()
@@ -76,9 +76,14 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str, txt_type:s
     with open(filepath,"r") as f:
         content = f.readlines()
     
+    # check if weighted has virial:
+    if "Virial" in content[-2]:
+        start_indes = -11
+    else:
+        start_indes = -7
     if txt_type == "standard":
         metrics = {}
-        for line in content[-11:-1]:
+        for line in content[start_indes:-1]:
             line = line.split("deepmd.entrypoints.test")[-1].strip()
             metrics[f"{dataset_name} " + line.split(":")[0].strip()] = float(line.split(":")[-1].strip().split(" ")[0])
     elif txt_type == "property":
@@ -104,6 +109,9 @@ def extract_valid_path_from_input(exp_path:str, head:str) -> Path:
 
     if head:
         valid_paths = dd['training']['data_dict'][head]['validation_data']['systems']
+        if head in ["OC20M", "Omat24", "OMol25"]:
+            np.random.seed(42)
+            valid_paths = np.random.choice(valid_paths, size=int(0.1 * len(valid_paths)), replace=False)
     else: # single task
         valid_paths = dd['training']['validation_data']['systems']
 
