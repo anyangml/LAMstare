@@ -83,7 +83,7 @@ def plotting(
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
         # removing two ood test sets
-        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "HEA25", "HEMC_HEMB", "WBM", "ANI", "MD22"]:
+        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "HEA25", "HEMC_HEMB", "WBM", "ANI", "MD22", "COLL_test", "H_nature_2022","Chig_AIMD"]:
             continue
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
         subplot = dataset_to_subplot[dataset]  # type: ignore

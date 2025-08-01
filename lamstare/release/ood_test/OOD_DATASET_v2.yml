@@ -3,7 +3,7 @@ OOD_TO_HEAD_MAP:
   AQM-sol:
     head: OMol25
     filepath:
-     - /mnt/data_nas/public/AQM-sol-PBE0
+     - /aisi/public/LAMBench-TestData-v2/AQM-sol-PBE0
     energy_weight: 1
     force_weight: 1
     virial_weight: null
@@ -24,7 +24,7 @@ OOD_TO_HEAD_MAP:
   MoS2:
     head: Omat24
     filepath:
-      - /mnt/data_nas/public/OOD_test_data/2D_materials/MoS2
+      - /aisi/public/LAMBench-TestData-v2/MoS2
     energy_weight: 1
     force_weight: 1
     virial_weight: 1
@@ -49,17 +49,31 @@ OOD_TO_HEAD_MAP:
   #   energy_weight: 1
   #   force_weight: 1
   #   virial_weight: 1
-  COLL_test:
+  # COLL_test:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/collision
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  COLL_PBE:
     head: Omat24
     filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/collision
+      - /aisi-nas/public/OOD_test_downsample/collision__downsampled_pbe_fragSpinRecog/seed2_relabel_pbe_631Gd_gaussian_frag_spin_recog/
     energy_weight: 1
     force_weight: 1
     virial_weight: null
-  H_nature_2022:
+  # H_nature_2022:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/H_nature_2022/
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  H_nature_2022_PBE:
     head: Omat24
     filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/H_nature_2022/
+      - /aisi-nas/public/OOD_test_downsample/H_nature_2022__downsampled_pbe_fragSpinRecog/seed2_relabel_pbe_631Gd_gaussian_frag_spin_recog/
     energy_weight: 1
     force_weight: 1
     virial_weight: null
@@ -77,10 +91,17 @@ OOD_TO_HEAD_MAP:
     energy_weight: 1
     force_weight: 1
     virial_weight: null
-  Chig_AIMD:
+  # Chig_AIMD:
+  #   head: OMol25
+  #   filepath:
+  #     -/mnt/data_nas/public/OOD_test_data_v2/AIMD_Chig
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  Chig_AIMD_PBE:
     head: OMol25
     filepath:
-      - /mnt/data_nas/public/OOD_test_data_v2/AIMD_Chig
+      - /aisi-nas/public/OOD_test_downsample/AIMD_Chig__downsampled_pbe/seed2_relabel_pbe_631Gd_gaussian/
     energy_weight: 1
     force_weight: 1
     virial_weight: null
