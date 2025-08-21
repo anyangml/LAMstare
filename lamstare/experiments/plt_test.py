@@ -1,5 +1,6 @@
 from collections import defaultdict
 from functools import lru_cache
+from pathlib import Path
 from typing import Union
 
 import matplotlib.pyplot as plt
@@ -32,7 +33,7 @@ COLOR = [
 
 IND_DATASET_STD = (
     pandas.read_json(
-        "/mnt/data_nas/cc/LAMstare_new/lamstare/baseline_stat_new.json",
+        "/mnt/data_nas/public/multitask/LAMstare/lamstare/baseline_stat_new.json",
         orient="records",
     )
     .infer_objects()
@@ -92,7 +93,7 @@ def parse_record_dict_to_df(data: dict) -> DataFrame:
     # Set multi-index
     df.set_index(["Dataset", "Training Steps"], inplace=True)
     # sort by Dataset
-    df.sort_index(level=0, inplace=True)
+    # df.sort_index(level=0, inplace=True) # Don't sort, preserve the order in weights definition
     return df
 
 
@@ -115,13 +116,14 @@ def get_weighted_result(exp_path: str) -> DataFrame:
 
     weighted_avg = all_records_df.groupby(
         "Training Steps"
-    ).mean()  # provide a baseline with same shape
+    ).mean().map(lambda x: np.nan)  # provide a df with same shape
+
     # mask.inplace and update() won't work; need to assign to a new variable
     for efv in ["energy", "force", "virial"]:
         data = all_records_df.loc[
             :, [key for key in all_records_df.keys() if efv in key]
         ]
-        data.mask(weights == 0, inplace=True)
+        # data.mask(weights == 0, inplace=True) # Should NOT mask here
         weighted_avg_efv = (
             data.apply(np.log)
             .mul(weights, axis="index")
@@ -129,11 +131,15 @@ def get_weighted_result(exp_path: str) -> DataFrame:
             .mean()
             .apply(np.exp)
         )
+        # mask out the results where NAN exists in the original data
+        # not working: if a result is not generated, it won't have an entry in the dataframe
+        # weighted_avg_efv.mask(all_records_df.isna().any(axis=1).groupby("Training Steps").any(), inplace=True)
         weighted_avg.update(weighted_avg_efv)
 
     weighted_avg["Dataset"] = "Weighted"
     weighted_avg.reset_index(inplace=True)
     weighted_avg.set_index(["Dataset", "Training Steps"], inplace=True)
+    # weighted_avg.reindex(weights.index,level=0)
     all_records_df = pandas.concat(
         [all_records_df_raw, weighted_avg]
     )  # Preserve masked values
@@ -146,9 +152,12 @@ def plotting(
     all_records_df: DataFrame,
     color: str,
     legend_handles: list[Line2D],
+    metric_key:str = "rmse"
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
-        assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
+        # assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
+        if dataset not in dataset_to_subplot.keys():
+            continue
         subplot = dataset_to_subplot[dataset]  # type: ignore
         # print(dataset)
         records = records.droplevel("Dataset")
@@ -157,7 +166,7 @@ def plotting(
         for efv, suffix, subsubplot in zip(
             ["energy", "force", "virial"], ["_natoms", "", "_natoms"], subplot
         ):
-            metric_name = efv + "_rmse" + suffix
+            metric_name = efv + f"_{metric_key}" + suffix
             line = subsubplot.loglog(
                 records.index,  # step
                 records[metric_name],
@@ -167,24 +176,17 @@ def plotting(
                 alpha=0.8,
             )
             if dataset in IND_DATASET_STD.index:
-                subsubplot.axhline(IND_DATASET_STD.loc[dataset, f"rmse_{efv[0]}"], color="purple", linestyle="-.")  # type: ignore
+                subsubplot.axhline(IND_DATASET_STD.loc[dataset, f"{metric_key}_{efv[0]}"], color="purple", linestyle="-.")  # type: ignore
             # FIXME: this will draw duplicated lines
     legend_handles.extend(line)  # type: ignore
 
 
-def main(exps: list[str]):
+def main(exps: list[str], metric_key:str="rmse"):
     # Get all datasets
-    datasets: list[str] = sorted(
-        set(
-            dataset
-            for exp in exps
-            for dataset in get_weighted_result(exp)
-            .index.get_level_values("Dataset")
-            .unique()
-            .tolist()
-        )
-    )
-    datasets.remove("Weighted")  # Assuming it exists
+    datasets: list[str] = DataFrame.from_dict(
+        data=get_head_weights(exps[0]), orient="index", columns=["weight"]
+    ).rename_axis("Dataset").index.tolist()
+    # use -1 for Alex3D->OMat compatibility
     datasets.append("Weighted")  # Move to the end
     print(datasets)
 
@@ -193,6 +195,10 @@ def main(exps: list[str]):
     )
     ax: list[list[Axes]]
     legend_handles: list[Line2D] = []
+
+    # Reverse the order of subplot rows
+    ax = ax[::-1] 
+
     # get axis by dataset name to prevent plotting on wrong axis
     dataset_to_subplot = dict(zip(datasets, ax))
     # add energy/force/virial to the beginning of plots
@@ -201,11 +207,13 @@ def main(exps: list[str]):
 
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
-        plotting(dataset_to_subplot, all_records_df, color, legend_handles)
+        plotting(dataset_to_subplot, all_records_df, color, legend_handles, metric_key)
+
+    
 
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
-    title = "Compare IND"
+    title = f"Compare IND-{metric_key}"
     # fig.suptitle(title) # Poor placement
     fig.legend(
         handles=legend_handles,
@@ -221,23 +229,12 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        # "/mnt/data_nas/public/multitask/training_exps/1107_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_240by6_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_shareft_pref0021_1000100_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1110_newdata_sharft_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1113_shareft_lr1e-3_1e-5_pref0220_10020_medium_l6_atton_37head_tanh_40GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_8GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1116_shareft_960by3_lr1e-3_1e-5_medium_l6_atton_37head_tanh_120GPU",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_large_descp",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by6",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_480by3",
-        # "/mnt/data_nas/public/multitask/training_exps/1119_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_960by3_baseline"
-        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_32",
-        # "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_192_48_12",
-        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
-
+        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_new_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/250703_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        "/aisi/public/multitask/training_exps/250707_dpa3_openlam_v2_8M_L16_omol_2nd_fitting",
+        "/aisi/public/multitask/training_exps/250708_dpa3_openlam_v2_8M_L16_omol_2fting_with_default_fparam",
+        "/aisi/public/multitask/training_exps/250710_dpa3_openlam_v2_old_weight_8M_L16_remove_mptrj",
     ]
     main(exps)
+    main(exps,"mae")

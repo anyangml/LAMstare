@@ -8,12 +8,13 @@ import numpy as np
 from typing import List, Dict, Any
 import os
 import yaml
+from pathlib import Path
+import warnings
 
 load_dotenv()
 
 APP_TOKEN = os.environ.get("TABLE_APP_TOKEN")
 TABLE_ID = os.environ.get("TABLE_ID")
-
 
 def send2table(
     data: Dict[str, Any], run_id: str, record_id=None, method: str = "post"
@@ -38,7 +39,7 @@ def send2table(
         "fields": {
             "Experiment name": run_id,
             "Update Time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            **{k:v for k,v in data.items() if not np.isnan(v)},
+            **{k:v for k,v in data.items() if (v and not np.isnan(v))},
         }
     }
     if method == "post":
@@ -46,6 +47,7 @@ def send2table(
     elif method == "put":
         resp = requests.put(record_url, json=data, headers=headers)
     res = json.loads(resp.text)
+    print(res)
 
 
 def fet_records_from_table():
@@ -103,7 +105,7 @@ def fetch_ood_res(exp_path: str, weights_e: dict, weights_f: dict, weights_v: di
     data["Weighted_v_rmse"] = cal_weighted_log_mean(rmse_v, weights_v)
 
 
-    # path = "/mnt/workspace/public/multitask/LAMstare/ood_data_std_v.txt"
+    # path = "/mnt/data_nas/penganyang/ood_data_std_v.txt"
     # with open(path, "r") as f:
     #     contents = f.read()
     # data = {}
@@ -122,7 +124,6 @@ def fetch_ood_res(exp_path: str, weights_e: dict, weights_f: dict, weights_v: di
     # data["Weighted_e_rmse"] = cal_weighted_log_mean(rmse_e, weights_e)
     # data["Weighted_f_rmse"] = cal_weighted_log_mean(rmse_f, weights_f)
     # data["Weighted_v_rmse"] = cal_weighted_log_mean(rmse_v, weights_v)
-    # print(data)
     return data
 
 
@@ -137,14 +138,15 @@ def cal_weighted_log_mean(rmses: dict, weights: dict):
 
     assert rmses.shape == weights.shape
     weighted_log_rmse = np.log(rmses) * weights
-    weighted_log_rmse_mean = np.nanmean(weighted_log_rmse)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        weighted_log_rmse_mean = np.nanmean(weighted_log_rmse)
     weighted_rmse_mean = np.exp(weighted_log_rmse_mean)
     return weighted_rmse_mean
 
 
 def main(exp_paths:List[str], weights_e:dict, weights_f:dict, weights_v:dict):
     run2record = fet_records_from_table()
-
     for exp_path in exp_paths:
         data = fetch_ood_res(exp_path, weights_e, weights_f, weights_v)
         run_id=exp_path.split("/")[-1]
@@ -156,7 +158,7 @@ def main(exp_paths:List[str], weights_e:dict, weights_f:dict, weights_v:dict):
 
 
 def push_weights():
-    with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
+    with open(Path(os.path.dirname(__file__)).parent / "release/ood_test/OOD_DATASET_v2.yml","r") as f:
         yaml_dd =  yaml.safe_load(f)
 
     run2record = fet_records_from_table()
@@ -175,7 +177,7 @@ def push_weights():
     }
     send2table(data, "Weight", record_id=run2record.get("Weight"), method=method)
 
-def delete_column():
+def fetch_column():
     url  = (
         "https://open.feishu.cn/open-apis/bitable/v1/apps/%s/tables/%s/fields"
         % (APP_TOKEN, TABLE_ID)
@@ -185,8 +187,12 @@ def delete_column():
         "Content-Type": "application/json; charset=utf-8",
     }
     resp = requests.get(url, headers=headers)
-    res = json.loads(resp.text)
-    for fid in res['data']['items']:
+    res = json.loads(resp.text)['data']['items']
+    return res
+
+def delete_column():
+    res = fetch_column()
+    for fid in res:
         url = (
             "https://open.feishu.cn/open-apis/bitable/v1/apps/%s/tables/%s/fields/%s"
             % (APP_TOKEN, TABLE_ID, fid['field_id'])
@@ -198,8 +204,8 @@ def delete_column():
         resp = requests.delete(url, headers=headers)
 
 def add_column():
-
-    with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml","r") as f:
+    cur_columns = [col['field_name'] for col in fetch_column()]
+    with open(Path(os.path.dirname(__file__)).parent / "release/ood_test/OOD_DATASET_v2.yml","r") as f:
         yaml_dd =  yaml.safe_load(f)
 
     url  = (
@@ -215,7 +221,8 @@ def add_column():
                 "field_name": "Update Time",
                 "type": 5,
             }
-    resp = requests.post(url, json=data,headers=headers)
+    if data['field_name'] not in cur_columns:
+        resp = requests.post(url, json=data,headers=headers)
 
 
     for ood in yaml_dd["OOD_TO_HEAD_MAP"]:
@@ -226,7 +233,8 @@ def add_column():
                 "formatter": "0.0000"
             }
         }
-        resp = requests.post(url, json=data,headers=headers)
+        if data['field_name'] not in cur_columns:
+            resp = requests.post(url, json=data,headers=headers)
         data = {
             "field_name": f"{ood}_f_rmse",
             "type": 2,
@@ -234,7 +242,8 @@ def add_column():
                 "formatter": "0.0000"
             }
         }
-        resp = requests.post(url, json=data,headers=headers)
+        if data['field_name'] not in cur_columns:
+            resp = requests.post(url, json=data,headers=headers)
         data = {
             "field_name": f"{ood}_v_rmse",
             "type": 2,
@@ -251,7 +260,8 @@ def add_column():
             "formatter": "0.0000"
         }
     }
-    resp = requests.post(url, json=data,headers=headers)
+    if data['field_name'] not in cur_columns:
+        resp = requests.post(url, json=data,headers=headers)
     data = {
         "field_name": "Weighted_f_rmse",
         "type": 2,
@@ -259,7 +269,8 @@ def add_column():
             "formatter": "0.0000"
         }
     }
-    resp = requests.post(url, json=data,headers=headers)
+    if data['field_name'] not in cur_columns:
+        resp = requests.post(url, json=data,headers=headers)
     data = {
         "field_name": "Weighted_v_rmse",
         "type": 2,
@@ -267,11 +278,13 @@ def add_column():
             "formatter": "0.0000"
         }
     }
-    resp = requests.post(url, json=data, headers=headers)
+    if data['field_name'] not in cur_columns:
+        resp = requests.post(url, json=data, headers=headers)
 
 
 if __name__ == "__main__":
+    # fetch_column()
     # delete_column()
     # add_column()
-    push_weights()
+    # push_weights()
     pass

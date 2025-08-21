@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 import yaml
 from dotenv import load_dotenv
-
+import numpy as np
 from lamstare.utils.dlc_submit import submit_job_to_dlc
 
 load_dotenv()
@@ -59,52 +59,6 @@ def run_dptest(
     return result
 
 
-## DEPRECATED
-
-# def run_single_head_dptest(exp_path:str, ckpt:int, head:str, test_file:Optional[str], ood_name:str) -> Dict[str,float]:
-#     logging.error("This function is deprecated. Please use run_dptest instead.")
-#     dptest_res = {}
-#     run_id=exp_path.split("/")[-1] # Get basename as id
-#     temp_file_name = f"{run_id}#{ckpt}#{head}"
-#     temp_file_dir=temp_file_path+run_id+ood_name+"/"
-
-#     try:
-#         result_file = temp_file_dir+temp_file_name+".txt"
-#         print(result_file)
-#         if not os.path.exists(result_file):
-#             os.mkdir(temp_file_dir)
-#             script_path = os.path.join(os.path.dirname(__file__), "single_dptest.sh")
-#             args = [script_path, exp_path, str(ckpt), head, temp_file_dir, test_file]
-#             command = (
-#                 f'". /mnt/data_nas/public/.bashrc;'
-#                 f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','lamstare')};"
-#                 f"cd /mnt/data_nas/cc/LAMstare/lamstare/release;"
-#                 f"export TEMP_FILE_DIR={temp_file_dir};"
-#             )
-#             command += " ".join(args)
-#             command += '"'
-#             print("Executing command: ", command)
-#             submit_job_to_dlc(f"OOD_TEST_{ood_name}_{run_id}", command)
-#             return None
-#             # print("Executing command: ", *args)
-#             # subprocess.run(args, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#         else:
-#             # check if "weighted average of errors" is in the file
-#             with open(result_file, "r") as f:
-#                 content = f.read()
-#             if "weighted average of errors" in content:
-#                 print(f"job {temp_file_dir} already finished")
-#                 dptest_res = extract_info_from_dptest_txt(head, result_file)
-#                 # shutil.rmtree(temp_file_dir)
-#                 return dptest_res
-#             else:
-#                 print(f"job {temp_file_dir} ongoing")
-#                 return None
-#     except FileExistsError:
-#         print(f"job {temp_file_dir} already submitted")
-#         return None
-#     except:
-#         print(f"Fail to test {temp_file_dir}")
 
 
 def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str, txt_type:str="standard") -> Dict[str,float]:
@@ -122,9 +76,14 @@ def extract_info_from_dptest_txt(dataset_name:str, filepath:Path|str, txt_type:s
     with open(filepath,"r") as f:
         content = f.readlines()
     
+    # check if weighted has virial:
+    if "Virial" in content[-2]:
+        start_indes = -11
+    else:
+        start_indes = -7
     if txt_type == "standard":
         metrics = {}
-        for line in content[-11:-1]:
+        for line in content[start_indes:-1]:
             line = line.split("deepmd.entrypoints.test")[-1].strip()
             metrics[f"{dataset_name} " + line.split(":")[0].strip()] = float(line.split(":")[-1].strip().split(" ")[0])
     elif txt_type == "property":
@@ -150,6 +109,9 @@ def extract_valid_path_from_input(exp_path:str, head:str) -> Path:
 
     if head:
         valid_paths = dd['training']['data_dict'][head]['validation_data']['systems']
+        if head in ["OC20M", "Omat24", "OMol25"]:
+            np.random.seed(42)
+            valid_paths = np.random.choice(valid_paths, size=int(0.1 * len(valid_paths)), replace=False)
     else: # single task
         valid_paths = dd['training']['validation_data']['systems']
 

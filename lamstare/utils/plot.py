@@ -16,7 +16,7 @@ bot_url = os.environ.get("FEISHU_BOT_URL")
 # Plotting
 def fetch_lcurve(run_pth):
     """
-    Given the absolute path to the experiment folder, return the dataframe containing learning curve information. 
+    Given the absolute path to the experiment folder, return the dataframe containing learning curve information.
     """
 
     logfile = Path(os.path.join(run_pth, "lcurve.out"))
@@ -35,7 +35,7 @@ def get_tat_token():
     url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
     headers = {"Content-Type": "application/json; charset=utf-8"}
     data = {
-        "app_id": app_id, 
+        "app_id": app_id,
         "app_secret": app_secret,
     }
     response = requests.request("POST", url, headers=headers, json=data)
@@ -48,10 +48,10 @@ def uploadImage(token, file):
     Upload an image to Feishu App to generate image_key for POST.
     """
     url = "https://open.feishu.cn/open-apis/im/v1/images"
-    form = {"image_type": "message", "image": (open(file, "rb"))}  
+    form = {"image_type": "message", "image": (open(file, "rb"))}
     multi_form = MultipartEncoder(form)
     headers = {
-        "Authorization": f"Bearer {token}", 
+        "Authorization": f"Bearer {token}",
     }
     headers["Content-Type"] = multi_form.content_type
     response = requests.request("POST", url, headers=headers, data=multi_form)
@@ -87,4 +87,3 @@ def sendimg(files: List[str], title:str):
     for file in files:
         img_keys.append(uploadImage(token, file))
     send2bot(img_keys, title)
-

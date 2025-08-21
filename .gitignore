@@ -7,4 +7,6 @@ __pycache__
 .env
 *.jpg
 testood/
-finetune/
+finetune*/
+logs/
+pretrained_models/

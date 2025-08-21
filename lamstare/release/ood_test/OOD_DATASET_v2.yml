@@ -1,0 +1,151 @@
+IS_MULTI_TASK: true
+OOD_TO_HEAD_MAP:
+  AQM-sol:
+    head: OMol25
+    filepath:
+     - /aisi/public/LAMBench-TestData-v2/AQM-sol-PBE0
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  RXN_XTB:
+    head: OMol25
+    filepath:
+      - /mnt/data_nas/public/CHON_xtb_downsampled
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  Methane-Activation:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/MethaneAct_ClusterTS
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  MoS2:
+    head: Omat24
+    filepath:
+      - /aisi/public/LAMBench-TestData-v2/MoS2
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  # HEA25:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/HEA25
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: 1
+  HEA25S:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/HEA25S
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  # HEMC_HEMB:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/HEMC_HEMB
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: 1
+  # COLL_test:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/collision
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  COLL_PBE:
+    head: Omat24
+    filepath:
+      - /aisi-nas/public/OOD_test_downsample/collision__downsampled_pbe_fragSpinRecog/seed2_relabel_pbe_631Gd_gaussian_frag_spin_recog/
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  # H_nature_2022:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/H_nature_2022/
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  H_nature_2022_PBE:
+    head: Omat24
+    filepath:
+      - /aisi-nas/public/OOD_test_downsample/H_nature_2022__downsampled_pbe_fragSpinRecog/seed2_relabel_pbe_631Gd_gaussian_frag_spin_recog/
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  REANN_CO2_Ni100:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/REANN_CO2_Ni100/
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  NequIP_NC_2022:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/NequIP_NC_2022
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  # Chig_AIMD:
+  #   head: OMol25
+  #   filepath:
+  #     -/mnt/data_nas/public/OOD_test_data_v2/AIMD_Chig
+  #   energy_weight: 1
+  #   force_weight: 1
+  #   virial_weight: null
+  Chig_AIMD_PBE:
+    head: OMol25
+    filepath:
+      - /aisi-nas/public/OOD_test_downsample/AIMD_Chig__downsampled_pbe/seed2_relabel_pbe_631Gd_gaussian/
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  CGM_MLP_NC2023:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/CGM_MLP
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  Cu_MgO_catalysts:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/Cu_MgO_CO2/
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  Ca_batteries_CM2021:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/Ca_batteries
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  HPt_NC_2022:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/HPt_NC2022
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  Si_ZEO22:
+    head: Omat24
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data_v2/Si_ZEO22
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: null
+  # WBM:
+  #   head: Omat24
+  #   filepath:
+  #     - /mnt/data_nas/public/OOD_test_data_v2/WBM_downsampled
+  #   energy_weight: 1
+  #   force_weight: null
+  #   virial_weight: null
+  
+  

@@ -1,6 +1,6 @@
 from functools import lru_cache
 import os
-
+from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
@@ -14,7 +14,7 @@ from lamstare.infra.ood_database import OODRecord
 from lamstare.utils.plot import sendimg
 
 
-with open(os.path.dirname(__file__) + "/../release/OOD_DATASET.yml", "r") as f:
+with open(os.path.dirname(__file__) + "/../release/ood_test/OOD_DATASET_v2.yml", "r") as f:
     OOD_DATASET = yaml.load(f, Loader=yaml.FullLoader)
 OOD_DATASET = (
     DataFrame(OOD_DATASET["OOD_TO_HEAD_MAP"]).T.rename_axis("Dataset").infer_objects()
@@ -27,7 +27,7 @@ for index in OOD_DATASET.keys():
 print(OOD_DATASET)
 
 OOD_DATASET_STD = pandas.read_csv(
-    "/mnt/workspace/cc/LAMstare_new/lamstare/release/ood_data_std.csv"
+    "/mnt/data_nas/public/multitask/LAMstare/lamstare/release/ood_test/ood_data_std.csv"
 ).infer_objects()
 OOD_DATASET_STD.set_index("Dataset", inplace=True)
 print(OOD_DATASET_STD)
@@ -45,14 +45,14 @@ def get_weighted_result(exp_path: str) -> DataFrame:
 
     weighted_avg = all_records_df.groupby(
         "Training Steps"
-    ).mean()  # provide a baseline with same shape
+    ).mean().map(lambda x: np.nan)  # provide a df with same shape
+
     # mask.inplace and update() won't work; need to assign to a new variable
     for efv in ["energy", "force", "virial"]:
         data = all_records_df.loc[
             :, [key for key in all_records_df.keys() if efv in key]
         ]
         weights = OOD_DATASET[efv + "_weight"]
-        # data.mask(weights == 0, inplace=True)
         weighted_avg_efv = (
             data.apply(np.log)
             .mul(weights, axis="index")
@@ -60,8 +60,10 @@ def get_weighted_result(exp_path: str) -> DataFrame:
             .mean()
             .apply(np.exp)
         )
+        # mask out the results where NAN exists in the original data
+        weighted_avg_efv.mask(all_records_df["energy_mae"].isna().groupby("Training Steps").any(), inplace=True)
         weighted_avg.update(weighted_avg_efv)
-
+   
     weighted_avg["Dataset"] = "Weighted"
     weighted_avg.reset_index(inplace=True)
     weighted_avg.set_index(["Dataset", "Training Steps"], inplace=True)
@@ -77,8 +79,12 @@ def plotting(
     all_records_df: DataFrame,
     color: str,
     legend_handles: list[Line2D],
+    metric_key: str="rmse"
 ):
     for dataset, records in all_records_df.groupby("Dataset"):
+        # removing two ood test sets
+        if dataset in ["Sub_Alex_val", "raw_torsionnet500", "HEA25", "HEMC_HEMB", "WBM", "ANI", "MD22", "COLL_test", "H_nature_2022","Chig_AIMD"]:
+            continue
         assert dataset in dataset_to_subplot.keys(), f"Dataset {dataset} not presented"
         subplot = dataset_to_subplot[dataset]  # type: ignore
         # print(dataset)
@@ -95,7 +101,7 @@ def plotting(
                 subsubplot.axhline(std, color="purple", linestyle="-.")
                 # note: this will draw duplicated lines
 
-            metric_name = efv + "_rmse" + suffix
+            metric_name = efv + f"_{metric_key}" + suffix
             line = subsubplot.loglog(
                 records.index,  # step
                 records[metric_name],
@@ -107,7 +113,7 @@ def plotting(
     legend_handles.extend(line)  # type: ignore
 
 
-def main(exps: list[str]):
+def main(exps: list[str], metric_key: str="rmse"):
     # Get dataset list from yaml file to preserve the order
     datasets: list[str] = OOD_DATASET.index.tolist()
     datasets.append("Weighted")
@@ -126,11 +132,19 @@ def main(exps: list[str]):
 
     for exp_path, color in zip(exps, COLOR):
         all_records_df = get_weighted_result(exp_path)
-        plotting(dataset_to_subplot, all_records_df, color, legend_handles)
+        plotting(dataset_to_subplot, all_records_df, color, legend_handles, metric_key)
 
+    ## to set finer tick
+    from matplotlib.ticker import FixedLocator
+    ax[-1][0].yaxis.set_major_locator(FixedLocator(np.arange(0.02, 0.04, 0.002)))
+    ax[-1][1].yaxis.set_major_locator(FixedLocator(np.arange(0.2, 0.5, 0.04)))
+    ## to handle hpt explosion
+    # for ax in dataset_to_subplot["HPt_NC_2022"]:
+    #     ax.set_ylim(0.05,0.2)
+    
     fig.tight_layout()
     fig.subplots_adjust(top=0.975)
-    title = "Compare OOD"
+    title = f"Compare OOD-{metric_key}"
     # fig.suptitle(title) # Poor placement
     fig.legend(
         handles=legend_handles,
@@ -146,8 +160,18 @@ def main(exps: list[str]):
 
 if __name__ == "__main__":
     exps = [
-        
-        "/mnt/data_nas/public/multitask/training_exps/1122_shareft_lr1e-3_1e-5_pref0021_1000100_24GUP_240by3_single_384_96_24",
-        "/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24"
+        # "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_old_weight_8M_l16",
+        # "/aisi/public/multitask/training_exps/250701_dpa3_openlam_v2_new_weight_8M_l16",
+        "/aisi/public/multitask/training_exps/dpa3.1-3m",
+        # "/aisi/public/multitask/training_exps/250714_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        # "/aisi/public/multitask/training_exps/250714_dpa3_openlam_v2_old_weight_22task",
+        # "/aisi/public/multitask/training_exps/250630_dpa3_openlam_v1_old_weight_8M_compare0415",
+        # "/aisi/public/multitask/training_exps/250703_dpa3_openlam_v2_old_weight_8M_L16_only_change_omol",
+        "/aisi/public/multitask/training_exps/250722_dpa3_openlam_v2_old_weight_22task_deepcsp_mpgen",
+        "/aisi-nas/public/training_experiments/250728_dpa3_l24_lr1e-3_1e-6_pref0.2_20_100_60_openlam_v2_GPU64_H20_filter128"
+        # "/aisi/public/multitask/training_exps/250707_dpa3_openlam_v2_8M_L16_omol_2nd_fitting",
+        # "/aisi/public/multitask/training_exps/250708_dpa3_openlam_v2_8M_L16_omol_2fting_with_default_fparam",
+        # "/aisi/public/multitask/training_exps/250710_dpa3_openlam_v2_old_weight_8M_L16_remove_mptrj",
     ]
     main(exps)
+    # main(exps, "mae")

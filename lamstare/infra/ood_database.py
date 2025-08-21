@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import (
     Column,
@@ -28,7 +28,7 @@ Session = sessionmaker(db)
 
 
 class OODRecord(Base):
-    __tablename__ = "ood_demo"
+    __tablename__ = "release_ood"
 
     id = Column(Integer, primary_key=True)
     run_id = Column(String(256), index=True)
@@ -93,9 +93,12 @@ class OODRecord(Base):
         return cls.query_by_run(run_id)[-1].step
 
     @classmethod
-    def query_best_by_run(cls, run_id: str) -> List["OODRecord"]:
+    def query_best_by_run(cls, run_id: str, step: Optional[int]=None) -> List["OODRecord"]:
         records = cls.query_by_run(run_id)
-        latest_step = cls.query_latest_step(run_id)
+        if step:
+            latest_step = step
+        else:
+            latest_step = cls.query_latest_step(run_id)
         ood_datasets = set([record.ood_dataset for record in records])
         best_records = []
         for ood_dataset in ood_datasets:

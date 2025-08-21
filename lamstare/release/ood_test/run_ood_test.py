@@ -21,11 +21,11 @@ def run_ood_test(
     checkpoint_path = Path(f"{exp_path}/model.ckpt-{step}.pt")
     head_dptest_res = run_dptest(checkpoint_path, head, testfile, ood_dataset)
     print(head_dptest_res)
-    if np.isnan(head_dptest_res[f"{head} Virial MAE"]):
-        head_dptest_res[f"{head} Virial MAE"] = -1
-        head_dptest_res[f"{head} Virial RMSE"] = -1
-        head_dptest_res[f"{head} Virial MAE/Natoms"] = -1
-        head_dptest_res[f"{head} Virial RMSE/Natoms"] = -1
+    if np.isnan(head_dptest_res.get(f"{head} Virial MAE", np.nan)):
+        head_dptest_res[f"{head} Virial MAE"] = None
+        head_dptest_res[f"{head} Virial RMSE"] = None
+        head_dptest_res[f"{head} Virial MAE/Natoms"] = None
+        head_dptest_res[f"{head} Virial RMSE/Natoms"] = None
     OODRecord(
         run_id=run_id,
         run_name=run_name,

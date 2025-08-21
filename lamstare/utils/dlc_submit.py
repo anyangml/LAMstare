@@ -2,65 +2,70 @@ import subprocess
 from dotenv import load_dotenv
 import os
 import logging
+import yaml
 
 load_dotenv()
 
 def query_job_numbers(job_name:str):
-    # /mnt/data_nas/penganyang/dlc get  job   --workspace_id 177142 --resource_id quota1esg0zrim9o -n TEST-1103_shallow_fitting_medium_l6_atton_37head_tanh_40GPU_bs_auto256-DNPs_2023_Kr
-    workspace_id = os.environ["WORKSPACE_ID"]
-    resource_id = os.environ["RESOURCE_ID"]
-    cmd = f"/mnt/data_nas/penganyang/dlc get job --workspace_id {workspace_id} --resource_id {resource_id}  --status Running,Queuing -n {job_name} | grep -c {workspace_id}"
-    logging.debug(f"Querying job status with command: \n{cmd}")
-    ret = subprocess.run(cmd, shell=True, check=False, stdout=subprocess.PIPE) # `grep -c` returns 0 on no match
-    ret = int(ret.stdout)
-    logging.debug(f"Job {job_name} has {ret} running or queuing jobs.")
-    return ret
 
+    cmd = f"export PATH=/root/.volc/bin/:$PATH; volc ml_task list  --status Queue,Staging,Running -n {job_name.replace('#', '井').replace('.','点')} --output json"
+    logging.debug(f"Querying job status with command: \n{cmd}")
+    ret = subprocess.run(cmd, shell=True, check=False, text=True, capture_output=True)
+    logging.info(f"Command output: \n{ret.stdout}")
+    if "没有匹配条件的任务" in ret.stdout:
+        logging.debug(f"No jobs found for {job_name}.")
+        return False
+    elif job_name.replace('#', '井') not in ret.stdout:
+        logging.debug(f"Job {job_name} not found in the output.")
+        return False
+    return True
 
 def submit_job_to_dlc(job_name:str, command:str):
-    docker_image = os.environ["DOCKER_IMAGE"]
-    data_sources = os.environ["DATA_SOURCES"]
-    workspace_id = os.environ["WORKSPACE_ID"]
-    resource_id = os.environ["RESOURCE_ID"]
-    priority = 1
-    worker_count = 1
-    worker_gpu = 1
-    worker_cpu = 12
-    worker_memory = 120
-    cmd = f"/mnt/data_nas/penganyang/dlc submit pytorchjob " \
-          f"--name {job_name} " \
-          f"--worker_cpu {worker_cpu} " \
-          f"--worker_gpu {worker_gpu} " \
-          f"--worker_memory {worker_memory}Gi " \
-          f"--worker_shared_memory {worker_memory}Gi " \
-          f"--worker_image {docker_image} " \
-          f"--data_sources {data_sources} " \
-          f"--priority {priority} " \
-          f"--workers {worker_count} " \
-          f"--workspace_id {workspace_id} " \
-          f"--resource_id {resource_id} " \
-          f"--command '{command}' " \
-        #   f"--envs {','.join([f'{k}={v}' for k,v in os.environ.items() if k in ['PWD','PATH','CONDA_PREFIX','PYTHONPATH',]])} "
-    logging.debug(f"Submitting job with command: \n{cmd}")
-    # cmd += ["--interactive"]
+    template = yaml.safe_load(open("/aisi/public/multitask/LAMstare/logs/job_template.yaml", "r"))
+    template["TaskName"] = job_name.replace("#", "井").replace('.','点')
+    template["Description"] = ""
+    template["ResourceQueueID"] = "q-20250618190306-vzjfq"
+    template.pop("UserCodePath", None)  # Remove UserCodePath if it exists
+    template.pop("ActiveDeadlineSeconds", None)  # Remove ActiveDeadlineSeconds if it exists
+    template["Framework"] = "PyTorchDDP"
+    template["Storages"] = [
+    {
+        "Type": "Vepfs",
+        "MountPath": "/aisi",
+        "VepfsId": "vepfs-cnbj6c0df4e46c0f",
+        "SubPath": ""
+    },
+    {
+        "Type": "Nas",
+        "MountPath": "/aisi-nas",
+        # "NasAddr": "cnbje8a153ae6108.13f6jwazr5q0w3n6nu5hgnoxu.nas.ivolces.com:/",
+        "NasId": "anas-cnbje8a153ae6108",
+        # "NasName": "aisi-nas"
+    }
+    ]
+    template["TaskRoleSpecs"] = [
+    {
+        "RoleName":"worker",
+        "RoleReplicas": 1,
+        "Flavor":"ml.pni2l.3xlarge"
+    }
+    ]
+    template["ImageUrl"] = "dp-ve-registry-cn-beijing.cr.volces.com/aisi/deepmd:0210"
+
+    # combined_command = ("ln -s  /aisi /mnt/data_nas\n"
+    #         f"{command}")
+
+    template['Entrypoint'] = command
+    yaml_file = f"/aisi/public/multitask/LAMstare/logs/{job_name}.yaml"
+    with open(yaml_file, "w") as f:
+        yaml.dump(template, f)
+    cmd = f"export PATH=/root/.volc/bin/:$PATH; volc ml_task submit -c {yaml_file}"
     try:
-        os.system(cmd)
-    except Exception as e:
-        logging.error(f"An error occurred while submitting the job: {e}")
-
-# deprecated
-def submit_dptest_job_to_dlc(exp_path:str):
-    job_name = exp_path.split("/")[-1]
-
-    venv = os.environ["VENV"]
-    lamstare_path = os.environ["ROOT_DIR"]
-
-    job_name = f"AUTOTEST_{job_name}"
-
-    command = f"#!/bin/bash \n" \
-            f". /mnt/data_nas/public/.bashrc \n" \
-            f"conda activate /mnt/data_nas/public/Miniconda/envs/{venv} \n" \
-            f"cd {lamstare_path} \n" \
-            f"python lamstare/experiments/run_test.py {exp_path} \n" \
-
-    submit_job_to_dlc(job_name,command)
+        ret = subprocess.run(cmd, shell=True, check=False, text=True, capture_output=True).stdout
+        job_id = ret.split("task_id=")[-1].strip()
+        logging.info(f'Job submitted : {job_id}')
+    except:
+        logging.warning('Warning: ret = subprocess.run has failed')
+    
+if __name__ == "__main__":
+    query_job_numbers("OOD-250618_openlam_v2_fparam_test#200000#AQM-sol#OMol25")

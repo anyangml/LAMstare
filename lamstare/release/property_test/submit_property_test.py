@@ -29,15 +29,16 @@ def submit_property_test(
 
             finetune_path = prepare_property_finetune_folder(exp_path, task_name, step, property_yml, output_path)
             command = (
-                ". /mnt/data_nas/public/.bashrc; "
-                f"conda activate /mnt/data_nas/public/Miniconda/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
-                # "export PYTHONPATH=/mnt/data_nas/cc/LAMstare_new;"
+                "export NUM_WORKERS=0; "
+                ". /mnt/data_nas/penganyang/.bashrc; "
+                f"conda activate /mnt/data_nas/penganyang/miniconda3/envs/{os.environ.get('CONDA_ENV','openlam_db')};"
+                "export PYTHONPATH=/mnt/data_nas/public/multitask/LAMstare;"
                 f"cd {Path(__file__).resolve().parent};"
-                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name} {property_yml}"
+                f"python3 run_property_test.py {exp_path} {task_name} {model_version} {step} {finetune_path} {run_name}"
             ).replace("workspace","data_nas")
-            
+
             job_name = f"PROPERTY-{run_name}"
-            
+
             if query_job_numbers(job_name):
                 logging.warning(f"SKIPPED: {job_name} is already running.")
             else:
@@ -48,15 +49,14 @@ def submit_property_test(
             logging.info(f"SKIPPED: {run_name} already exists.")
         else:
             logging.error(f"ERROR: {run_name} has multiple records, please check.")
-        break
-        
+
 
 
 
 
 
 def main(exp_path: str, step: int):
-    
+
     print(f"Running DPTEST for {exp_path} on ckpt-{step}...\n")
     submit_property_test(
         exp_path=exp_path,
@@ -66,4 +66,8 @@ def main(exp_path: str, step: int):
     )
 
 if __name__ == "__main__":
-    main("/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24", 1000000)
+    # main("/mnt/data_nas/public/multitask/training_exps/1225_dpa3a_shareft_rc6_120_arc_4_30_l6_120GPU_240by3_384_96_32_comp1", 1000000)
+    # main("/mnt/data_nas/public/multitask/training_exps/1126_prod_shareft_120GUP_240by3_single_384_96_24",8000000)
+    # main("/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",3870000)
+    # main("/mnt/data_nas/public/multitask/training_exps/0105_dpa3a_shareft_384_96_32_scp1_e1a_tanh_rc6_120_arc_4_30_l6_120GPU_240by3",3870000)
+    main("/mnt/data_nas/public/multitask/training_exps/0415_h20_dpa3a_shareft_nosel_128_64_32_scp1_e1a_csilu3_rc6_arc_4_expsw_l16_128GPU_240by3",4000000)

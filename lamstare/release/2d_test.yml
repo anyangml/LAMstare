@@ -1,0 +1,66 @@
+IS_MULTI_TASK: true
+OOD_TO_HEAD_MAP:
+  BN:
+    head: Alex2D # no path
+    filepath:
+     - /mnt/data_nas/public/OOD_test_data/2D_materials/BN
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  BN_mono:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/BN_mono
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  Gr_BN:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/Gr_BN
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  Gr_mono:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/Gr_mono
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  graphene:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/graphene
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  MoS2:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/MoS2
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  MoS2_mono:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/MoS2_mono
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  WSe2:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/WSe2
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  WSe2_mono:
+    head: Alex2D
+    filepath:
+      - /mnt/data_nas/public/OOD_test_data/2D_materials/WSe2_mono
+    energy_weight: 1
+    force_weight: 1
+    virial_weight: 1
+  
